@@ -25,13 +25,16 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Aggiungi illuminazione
-light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(3, 10, 2).normalize();
+light = new THREE.DirectionalLight(0xffffff, 2);
+light.position.set(-1, 5, -1).normalize();
 scene.add(light);
+// Aggiungi illuminazione
+
+
 
 
 //camera e sua posizione 
-camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000000000000000);
+camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(-8.53,5.90,-17.12);  // Posizionare la camera all'altezza dell'omino
 
 
@@ -139,15 +142,19 @@ function loadModelAndScale(url, scale, namesToRemove) {
                 console.log('LuigiPosition' , gltf.scene.position)
                 gltf.scene.position.set(-43, 0, 70); // Imposta la posizione di Luigi a (5, 0, 0)
                 console.log('LuigiRotation' , gltf.scene.rotation)
-                gltf.scene.rotation.set(0,3.1,0);
+                gltf.scene.rotation.set(-0.07,3.1,0);
             } else if (url.includes('mario')) {
                 console.log('MarioPosition' , gltf.scene.position)
                 gltf.scene.position.set(-43, 0, -55); // Imposta la posizione di Mario a (-5, 0, 0)
+                 // Imposta la posizione della camera dietro Mario
+                 camera.position.set(-62.85, 48.19, -91.31); // Posiziona la camera dietro Mario
+                 controls.target.set(-62.85, 48.19, 91.31);  // Punto di interesse iniziale della camera
             } else if (url.includes('penalty_area')) {
                 const prato = gltf.scene.getObjectByName('Plane001')
                 const palla = gltf.scene.getObjectByName('Sphere001')
                 scene.add(prato);
-                //palla.scale.set(0,0,0)
+                palla.scale.set(2,2,2)
+                palla.position.set(-480,30,-500)
                 prato.position.set(25, 0, 0);
                 console.log("Scale", prato.scale);
                 prato.scale.set(1, 0.6, 1);
@@ -166,8 +173,8 @@ function loadModelAndScale(url, scale, namesToRemove) {
 
 // Esempio di utilizzo per caricare e scalare i modelli
 loadModelAndScale('models/penalty_area/scene.gltf', 5, namesToRemove); // Scala 0.1 (10% della dimensione originale)
-loadModelAndScale('models/luigi/scene.gltf', 1.2, []); // Scala 0.05 (5% della dimensione originale)
-loadModelAndScale('models/mario/scene.gltf', 0.2, []); // Scala 0.05 (5% della dimensione originale)
+loadModelAndScale('models/luigi/scene.gltf', 1.25, []); // Scala 0.05 (5% della dimensione originale)
+loadModelAndScale('models/mario/scene.gltf', 0.19, []); // Scala 0.05 (5% della dimensione originale)
 
 
 
