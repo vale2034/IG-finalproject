@@ -1,0 +1,11 @@
+Model Information:
+* title:	Prisoner
+* source:	https://sketchfab.com/3d-models/prisoner-e0898165a3e24b34bff0ca230d92c311
+* author:	asadkhan1881 (https://sketchfab.com/asadkhan1881)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Prisoner" (https://sketchfab.com/3d-models/prisoner-e0898165a3e24b34bff0ca230d92c311) by asadkhan1881 (https://sketchfab.com/asadkhan1881) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
