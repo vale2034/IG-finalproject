@@ -1,22 +1,24 @@
 import * as THREE from './utils/three.module.js';
 
 let models = {}; // Oggetto per memorizzare i modelli
+let instantiated = false;
 
 // Inizializza i personaggi con i modelli caricati e la scena
 export function initCharacters(loadedModels, scene) {
     models = loadedModels;
     // Esempio di inizializzazione per Mario e Luigi
-    if (models.mario) {
+    if (!models.mario.instantiated) {
         models.mario.mesh = new THREE.Object3D();
         models.mario.mesh.name = "mario";
         // Aggiungi il corpo del modello a mesh di Mario
         let marioBody = models.mario.getObjectByName("RootNode");
         marioBody.scale.set(0.19, 0.19, 0.19);
-        marioBody.position.set(-43, 0.1, -55);
-        models.mario.mesh.add(marioBody);
-        scene.add(models.mario.mesh);
         // Altri setup per Mario se necessario
+        models.mario.mesh.add(marioBody);
     }
+    models.mario.instantiated = true
+    scene.add(models.mario.mesh);
+    models.mario.position.set(-43, 0.1, -55);
 
     if (models.luigi) {
         models.luigi.mesh = new THREE.Object3D();
@@ -24,12 +26,25 @@ export function initCharacters(loadedModels, scene) {
         // Aggiungi il corpo del modello a mesh di Luigi
         let luigiBody = models.luigi.getObjectByName("RootNode");
         luigiBody.scale.set(1.25, 1.25, 1.25);
-        luigiBody.position.set(-43, 0, 70);
-        luigiBody.rotation.set(-0.07,3.1,0);
         // Assicurati di usare il nome corretto nel tuo modello GLTF
         models.luigi.mesh.add(luigiBody);
-        scene.add(models.luigi.mesh);
         // Altri setup per Luigi se necessario
+    }
+    models.luigi.instantiated = true
+    models.luigi.position.set(-43, 0, 70);
+    models.luigi.rotation.set(-0.07,3.1,0);
+    scene.add(models.luigi.mesh);
+    
+    if (models.penalty_area) {
+        models.penalty_area.mesh = new THREE.Object3D();
+        models.penalty_area.mesh.name = "penalty_area";
+        const palla = models.penalty_area.getObjectByName('Sphere001');
+        palla.scale.set(0.2, 0.2, 0.2);
+        palla.position.set(-43, 3, -46);
+        scene.add(palla);
+        const rete = models.penalty_area.getObjectByName('Box012')
+        //la rete serve per definire il punto di arrivo della trattoria della palla, cioè verso la rete. 
+        
     }
 
 
@@ -363,22 +378,28 @@ function setLuigiBones() {
 
 
 export function animateCharacters() {
+    console.log('animateCharacters called');
+
     TWEEN.update();
     // Example animation for Mario (kicking the ball)
-    if (models.mario && models.ball) {
+    if (models.mario && models.palla) {
         // Start the animation when spacebar is pressed
         document.addEventListener('keydown', function(event) {
             if (event.code === 'Space') {
+                console.log('Space bar pressed inside animateCharacters');
                 startMarioShootAnimation();
             }
         });
+    } else {
+        console.log(" Palla non definita o personaggio non caricato. ")
     }
 
     // Example animations or operations on models
 }
 
 function startMarioShootAnimation() {
-    if (models.mario && models.ball) {
+    console.log('startMarioShootAnimation called');
+    if (models.mario && models.palla) {
         var kickTween = new TWEEN.Tween({ angle: 0 })
             .to({ angle: -45 }, 500)
             .easing(TWEEN.Easing.Quadratic.Out)
@@ -398,23 +419,27 @@ function startMarioShootAnimation() {
                     })
                     .start();
 
-                moveBallToGoal(models.ball, models.mario, models.luigi);
+                moveBallToGoal(models.palla, models.mario, models.luigi);
             })
             .start();
     }
 }
 
-function moveBallToGoal(ball, mario, luigi) {
+function moveBallToGoal(palla, mario, luigi) {
+    console.log('moveBallToGoal called');
+
     var ballTween = new TWEEN.Tween(ball.position)
         .to({ x: 0, y: 0, z: 30 }, 1000)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onComplete(function() {
-            luigiSaveAttempt(luigi, ball);
+            luigiSaveAttempt(luigi, palla);
         })
         .start();
 }
 
-function luigiSaveAttempt(luigi, ball) {
+function luigiSaveAttempt(luigi, palla) {
+    console.log('luigiSaveAttempt called');
+
     var saveDirection = (Math.random() < 0.5) ? -1 : 1;
 
     var luigiTween = new TWEEN.Tween({ angle: 0, x: 0 })

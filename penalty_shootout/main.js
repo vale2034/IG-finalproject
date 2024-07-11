@@ -202,6 +202,7 @@ function removeObjects(gltfScene, namesToRemove) {
 
 // Gestisce gli eventi di pressione dei tasti per il movimento della camera
 function onKeyDown(event) {
+    console.log('Key pressed:', event.code);
     switch (event.code) {
         case 'ArrowUp':
         case 'KeyS':
@@ -226,6 +227,7 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
+    console.log('Key released:', event.code);
     switch (event.code) {
         case 'ArrowUp':
         case 'KeyS':
@@ -270,7 +272,6 @@ function animate() {
 
     renderer.render(scene, camera);
 
-    animations.animateCharacters();
 }
 
 animate()
