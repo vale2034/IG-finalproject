@@ -2,8 +2,10 @@ import * as THREE from './utils/three.module.js';
 import { GLTFLoader } from './utils/GLTFLoader.js';
 import { OrbitControls } from './utils/OrbitControls.js';
 import * as animations from './animations.js';  // Importa animations.js correttamente
+import { initCharacters, marioKickBallAnimation } from './animations.js';
 
 
+let clock = new THREE.Clock();
 let scene, camera, renderer, controls;
 let loader;
 let models = {};
@@ -30,15 +32,14 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
     scene.add(ambientLight);
 
     // Inizializza la camera e OrbitControls
-    camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 100000);
     camera.position.set(-8.53, 5.90, -17.12);
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(-8, 1, 10);
     controls.update(); // Necessario se la camera è stata modificata manualmente
 
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
+   
 
 
 
@@ -126,13 +127,8 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
     const loadingManager = new THREE.LoadingManager();
     loader = new GLTFLoader(loadingManager);
 
-   
-    loadingManager.onLoad = () => {
-        console.log('Caricamento completato.');
-        // Inizializza i personaggi (Mario, Luigi, ecc.) in animations.js
-        animations.initCharacters(models, scene);
-    };
 
+    
 
     modelsToLoad.forEach(model => {
         loader.load(model.url, gltf => {
@@ -140,18 +136,18 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
     
             // Applica la scala specificata al modello
             models[model.name].scale.set(model.scale, model.scale, model.scale);
-    
+            
             // Personalizza la posizione e altre proprietà per modelli specifici
             if (model.name === 'mario') {
                 camera.position.set(-62.85, 48.19, -91.31);
                 controls.target.set(-62.85, 48.19, 91.31);
             } else if (model.name === 'luigi') {
-               
+                
             } else if (model.name === 'penalty_area') {
                 // Recupera oggetti specifici dalla scena del modello
                 const prato = gltf.scene.getObjectByName('Plane001');
                 const palla = gltf.scene.getObjectByName('Sphere001');
-    
+                
                 if (prato) {
                     prato.scale.set(1, 0.6, 1);
                     prato.position.set(25, 0, 0);
@@ -159,18 +155,32 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
                 } else {
                     console.warn('Oggetto prato non trovato.');
                 }
-    
+                
             }
-    
+            
             removeObjects(gltf.scene, model.namesToRemove); // Rimuovi gli oggetti specificati da namesToRemove
-    
-            // Aggiungi il modello alla scena principale
             scene.add(models[model.name]);
-    
+            
+            
         }, undefined, error => {
             console.error(`Errore durante il caricamento di ${model.name}:`, error);
         });
     });
+
+
+    loadingManager.onLoad = () => {
+        console.log('Caricamento completato.');
+        // Inizializza i personaggi (Mario, Luigi, ecc.) in animations.js
+        initCharacters(models, scene);
+
+
+    };
+
+   
+   
+
+
+   
 
 
 // Funzione per rimuovere gli oggetti indesiderati dalla scena
@@ -199,6 +209,9 @@ function removeObjects(gltfScene, namesToRemove) {
 
 
 
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+
 
 // Gestisce gli eventi di pressione dei tasti per il movimento della camera
 function onKeyDown(event) {
@@ -219,9 +232,6 @@ function onKeyDown(event) {
         case 'ArrowRight':
         case 'KeyA':
             moveRight = true;
-            break;
-        case 'Space':
-            animations.animateCharacters(); // Trigger animation on spacebar press
             break;
     }
 }
@@ -252,9 +262,11 @@ function onKeyUp(event) {
 
 
 
-// Funzione per l'animazione della scena
+ //Funzione per l'animazione della scena
 function animate() {
     requestAnimationFrame(animate);
+    let delta = clock.getDelta();
+
 
     // Logica per il movimento della camera
     const velocity = new THREE.Vector3();
@@ -264,6 +276,10 @@ function animate() {
     if (moveRight) velocity.x += 2;
     camera.position.add(velocity);
     velocity.multiplyScalar(0.9); // Damping
+    
+
+   
+
 
     // Aggiorna OrbitControls e renderizza la scena
     controls.update();
