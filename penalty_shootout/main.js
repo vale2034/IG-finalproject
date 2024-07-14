@@ -145,7 +145,7 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
                 
             } else if (model.name === 'penalty_area') {
                 // Recupera oggetti specifici dalla scena del modello
-                const prato = gltf.scene.getObjectByName('Plane001');
+               /* const prato = gltf.scene.getObjectByName('Plane001');
                 const palla = gltf.scene.getObjectByName('Sphere001');
                 
                 if (prato) {
@@ -154,7 +154,7 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
                     scene.add(prato); // Aggiungi prato alla scena
                 } else {
                     console.warn('Oggetto prato non trovato.');
-                }
+                }*/
                 
             }
             
@@ -279,7 +279,7 @@ function animate() {
     
 
    
-
+    TWEEN.update(); 
 
     // Aggiorna OrbitControls e renderizza la scena
     controls.update();
