@@ -144,17 +144,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
             } else if (model.name === 'luigi') {
                 
             } else if (model.name === 'penalty_area') {
-                // Recupera oggetti specifici dalla scena del modello
-               /* const prato = gltf.scene.getObjectByName('Plane001');
-                const palla = gltf.scene.getObjectByName('Sphere001');
-                
-                if (prato) {
-                    prato.scale.set(1, 0.6, 1);
-                    prato.position.set(25, 0, 0);
-                    scene.add(prato); // Aggiungi prato alla scena
-                } else {
-                    console.warn('Oggetto prato non trovato.');
-                }*/
                 
             }
             
@@ -215,7 +204,7 @@ document.addEventListener('keyup', onKeyUp);
 
 // Gestisce gli eventi di pressione dei tasti per il movimento della camera
 function onKeyDown(event) {
-    console.log('Key pressed:', event.code);
+    //console.log('Key pressed:', event.code);
     switch (event.code) {
         case 'ArrowUp':
         case 'KeyS':
@@ -237,7 +226,7 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
-    console.log('Key released:', event.code);
+    //console.log('Key released:', event.code);
     switch (event.code) {
         case 'ArrowUp':
         case 'KeyS':

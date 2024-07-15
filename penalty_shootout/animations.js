@@ -29,7 +29,7 @@ export function initCharacters(loadedModels, scene) {
         mario.mesh.add(marioBody);
         mario.mesh.position.set(-40, 0.1, -55);
         scene.add(mario.mesh);
-        console.log("Mario initialized:", mario);
+        //console.log("Mario initialized:", mario);
         setCharacterBones(mario, boneMappingMario);
         characterReset(mario);
         
@@ -47,10 +47,10 @@ export function initCharacters(loadedModels, scene) {
         luigi.mesh.add(luigiBody);
         
         // Altri setup per Luigi se necessario
-        luigi.mesh.position.set(-43, 0, 70);
+        luigi.mesh.position.set(-43, 0, 65);
         luigi.mesh.rotation.set(-0.07,3.1,0);
         scene.add(luigi.mesh);
-        console.log("Luigi initialized:", luigi);
+        //console.log("Luigi initialized:", luigi);
         setCharacterBones(luigi, boneMappingLuigi);
         characterReset(luigi);
 
@@ -73,7 +73,7 @@ export function initCharacters(loadedModels, scene) {
         palla.scale.set(0.2, 0.2, 0.2);
         palla.position.set(-43, 3, -46);
         scene.add(palla);
-        console.log("Palla initialized:", palla);
+        //console.log("Palla initialized:", palla);
 
     }else {
         console.error("Palla not found in loaded models.");
@@ -83,7 +83,7 @@ export function initCharacters(loadedModels, scene) {
         rete.scale.set(0.094, 0.094, 0.094);
         rete.position.set(-42, 10, 69);
         scene.add(rete);
-        console.log("Rete initialized:", rete);
+        //console.log("Rete initialized:", rete);
 
     } else {
         console.error("Rete not found in loaded models.");
@@ -188,14 +188,13 @@ const boneMappingLuigi = {
 function setCharacterBones(character, boneMapping) {
     character.mesh.traverse(o => {
         if (o.isBone) {
-            console.log(`Bone found: ${o.name}`);
+            //console.log(`Bone found: ${o.name}`);
             if (boneMapping[o.name]) {
                 character.bones[boneMapping[o.name]] = o;
             }    
         }    
     });    
 }    
-
 
 
 
@@ -254,7 +253,7 @@ function characterReset(character) {
 }
 
 
-    // Animazione di calcio per Mario
+
 // Animazione di calcio per Mario
 export function marioKickBallAnimation(key) {
     console.log("Mario is kicking the ball!");
@@ -407,108 +406,6 @@ export function marioKickBallAnimation(key) {
 
     footTweenStart.chain(footTweenEnd);
 
-    let ballTween;
-    let ballRotationTween;
-
-    setTimeout(() => {
-        // Definizione delle traiettorie
-        let trajectory;
-
-        switch (key) {
-            case 'F':
-                // Tiro forte
-                trajectory = {
-                    positionEnd: { x: palla.position.x + 27, y: palla.position.y + 14, z: palla.position.z + 122 },
-                    rotationEnd: { x: 0, y: 0, z: 360 }
-                };
-                break;
-            case 'G':
-                // Tiro a giro
-                trajectory = {
-                    positionEnd: { x: palla.position.x - 27, y: palla.position.y +14 , z: palla.position.z + 122 },
-                    rotationEnd: { x: 0, y: 360, z: 0 }
-                };
-                break;
-            case 'B':
-                // Tiro basso
-                trajectory = {
-                    positionEnd: { x: palla.position.x -27, y: palla.position.y , z: palla.position.z + 122 },
-                    rotationEnd: { x: 0, y: 0, z: 360 }
-                };
-                break;
-            default:
-                console.error("Tiro non riconosciuto");
-                return;
-        }
-
-        /* ----- MOVIMENTO DELLA PALLA ----- */
-        var ballPositionStart = { x: palla.position.x, y: palla.position.y, z: palla.position.z };
-        var ballPositionEnd = trajectory.positionEnd;
-        var ballRotationStart = { x: 0, y: 0, z: 0 };
-        var ballRotationEnd = trajectory.rotationEnd;
-
-        ballTween = new TWEEN.Tween(ballPositionStart)
-            .to(ballPositionEnd, animationTime)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(function () {
-                palla.position.x = ballPositionStart.x;
-                palla.position.y = ballPositionStart.y;
-                palla.position.z = ballPositionStart.z;
-            })
-            .start();
-
-        ballRotationTween = new TWEEN.Tween(ballRotationStart)
-            .to(ballRotationEnd, animationTime)
-            .easing(TWEEN.Easing.Linear.None)
-            .onUpdate(function () {
-                palla.rotation.x = degToRad(ballRotationStart.x);
-                palla.rotation.y = degToRad(ballRotationStart.y);
-                palla.rotation.z = degToRad(ballRotationStart.z);
-            })
-            .start();
-
-        // Rimbalzo della palla
-        ballTween.onComplete(() => {
-            var bounceHeight = 14;
-            var groundY = 2.9;
-
-            function simulateBounce() {
-                let currentHeight = bounceHeight;
-                let gravity = 9.8;
-
-                function bounce() {
-                    if (currentHeight < 0.1) return;
-
-                    let timeUp = Math.sqrt((1 * currentHeight) / gravity);
-                    let timeDown = timeUp;
-
-                    let bounceUp = new TWEEN.Tween({ y: groundY })
-                        .to({ y: groundY + currentHeight }, timeUp * 500)
-                        .easing(TWEEN.Easing.Quadratic.Out)
-                        .onUpdate(function (object) {
-                            palla.position.y = object.y;
-                        });
-
-                    let bounceDown = new TWEEN.Tween({ y: groundY + currentHeight })
-                        .to({ y: groundY }, timeDown * 500)
-                        .easing(TWEEN.Easing.Quadratic.In)
-                        .onUpdate(function (object) {
-                            palla.position.y = object.y;
-                        });
-
-                    bounceUp.chain(bounceDown);
-                    bounceUp.start();
-
-                    currentHeight *= 0.5;
-                    bounceDown.onComplete(bounce);
-                }
-
-                bounce();
-            }
-
-            simulateBounce();
-        });
-    }, 500);
     
 
     
@@ -516,9 +413,25 @@ export function marioKickBallAnimation(key) {
     characterCurrentAnimationTweens = [];
     characterCurrentAnimationTweens.push(legTweenStart, legTweenEnd);
     characterCurrentAnimationTweens.push(footTweenStart, footTweenEnd);
-    characterCurrentAnimationTweens.push(ballTween);
-    characterCurrentAnimationTweens.push(ballRotationTween);
 
+
+
+    // Aggiungi questo dopo la parte di animazione
+    const tiroMario = key; // Salva il tipo di tiro
+
+    console.log(" " + key)
+    const parataLuigi = luigiSaveAttempt(); // Ottieni la direzione della parata
+    ballAnimation(tiroMario, parataLuigi); // Chiama la funzione di animazione della palla
+
+
+    if(tiroMario == parataLuigi){
+        //animazione Luigi festeggia per la parata 
+        console.log("CHE PARATA DI LUIGI")
+    } else {
+        //mario festeggia per il goal 
+        console.log("CHE GRAN GOAL DI MARIO")
+    }
+    
 }
 
 
@@ -536,7 +449,7 @@ export function luigiSaveAttempt(){
     const distance = luigi.mesh.position.distanceTo(palla.position);
 
     // Definisci una distanza massima per poter parare
-    const kickDistance = 50; // Modifica questo valore secondo necessità
+    const kickDistance = 1000; // Modifica questo valore secondo necessità
 
     if (distance > kickDistance) {
         console.log("La palla è troppo lontana per essere parata.");
@@ -548,7 +461,7 @@ export function luigiSaveAttempt(){
 
 
     //Definire la scelta casuale della parate per i 3 tipi di traiettoria. 
-    const animationTime = 500;
+    const animationTime = 700;
 
      // Scegliere una traiettoria casuale per il tiro
     const randomSave = Math.random();
@@ -569,51 +482,53 @@ export function luigiSaveAttempt(){
     let upperArmMaxAngleX;
     let upperArmMaxAngleY;
     let upperArmMaxAngleZ;
-    var thighMaxAngle;
+    let thighMaxAngleZ0;
+    let thighMaxAngleZ1;
 
 
 
     switch (saveDirection) {
         case 'F':
-            savePosition = { x: -23, y: 3, z: 70  }; // Posizione per tiro forte
-            spineMaxAngleY = -30;
-            spineMaxAngleZ = 45
+            savePosition = { x: -23, y: 3, z: 65  }; // Posizione per tiro forte
+            spineMaxAngleY = -10;
+            spineMaxAngleZ = 30
+            pelvisMaxAngle = -45;
+            upperArmMaxAngleX = 30
+            upperArmMaxAngleY = 45
+            upperArmMaxAngleZ = 45
+            thighMaxAngleZ0 = 0;
+            thighMaxAngleZ1 = -25;
+
+
+            
+
+            break;
+        case 'G':
+            savePosition = {x: -65, y: 3, z: 65 }; // Posizione per tiro a giro
+            
+            spineMaxAngleY = 10;
+            spineMaxAngleZ = -30;
             pelvisMaxAngle = 45;
             upperArmMaxAngleX = 30
             upperArmMaxAngleY = 45
             upperArmMaxAngleZ = 45
-            thighMaxAngle = -45;
-
-
-            console.log("Parata per tiro a forte")
-
-            break;
-        case 'G':
-            savePosition = {x: -60, y: 3, z: 70 }; // Posizione per tiro a giro
-            console.log("Parata per tiro a giro")
-            spineMaxAngleY = 30;
-            spineMaxAngleZ = -45;
-            pelvisMaxAngle = -180;
-            upperArmMaxAngleX = 30
-            upperArmMaxAngleY = 45
-            upperArmMaxAngleZ = 45
-            var thighMaxAngle = 45;
+            thighMaxAngleZ0 = 0;
+            thighMaxAngleZ1 = -25;
 
 
 
             break;
         case 'B':
-            savePosition = { x: -60, y: -4, z: 70 }; // Posizione per tiro basso
-            console.log("Parata per tiro basso")
-            spineMaxAngleY = 60;
-            spineMaxAngleZ = -70;
-            pelvisMaxAngle = -45;
-            upperArmMaxAngleX = 30
-            upperArmMaxAngleY = 45
-            upperArmMaxAngleY = 45
-            thighMaxAngle = 90;
-
-
+            savePosition = { x: -65, y: -4, z: 65 }; // Posizione per tiro basso
+           
+            spineMaxAngleY = 20;
+            spineMaxAngleZ = -30;
+            pelvisMaxAngle = 95;
+            upperArmMaxAngleX = 30;
+            upperArmMaxAngleY = 45;
+            upperArmMaxAngleZ = 45;
+            thighMaxAngleZ0 = 0;
+            thighMaxAngleZ1 = -95;
 
 
             break;
@@ -681,14 +596,15 @@ export function luigiSaveAttempt(){
 
   
 
-    var thighRotationStart = {x:0, y:0, z:thighMaxAngle};
-    var thighRotationEnd = {x:0, y:0, z:thighMaxAngle};
+    var thighRotationStart = {x:0, y:0, z:thighMaxAngleZ0};
+    var thighRotationEnd = {x:0, y:0, z:thighMaxAngleZ1};
     var thighTweenStart = new TWEEN.Tween(thighRotationStart)
     .to(thighRotationEnd, animationTime)
     .easing(TWEEN.Easing.Quadratic.In)
     .onUpdate(function() {
         luigi.bones.left_thigh.rotation.z = degToRad(thighRotationStart.z);
-        luigi.bones.right_thigh.rotation.z = degToRad(-thighRotationStart.z);
+        luigi.bones.right_thigh.rotation.z = degToRad(thighRotationStart.z);
+       
     })
     .start();
 
@@ -732,38 +648,294 @@ export function luigiSaveAttempt(){
     
     const bodyStartPosition = { x: luigi.mesh.position.x, y:bodyMaxPosition, z: luigi.mesh.position.z };
     const bodyEndPosition = savePosition;
-    const bodyTween = new TWEEN.Tween(bodyStartPosition)
+    const bodyTweenStart= new TWEEN.Tween(bodyStartPosition)
         .to(bodyEndPosition, animationTime)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(function () {
             luigi.mesh.position.x = bodyStartPosition.x;
             luigi.mesh.position.y = bodyStartPosition.y;
             luigi.mesh.position.z = bodyStartPosition.z;
+
         })
         .start();
 
 
-
-        //chiamarlo BodyTween da migliorare la collisione 
-    // Completamento dell'animazione
-    bodyTweenStart.onUpdate(() => {
-        const collisionDistance = 1;
-        console.log("Luigi ha tentato di parare la palla!");
-        // Logica aggiuntiva per verificare se la parata ha avuto successo
-        if (luigi.mesh.position.distanceTo(palla.position) < collisionDistance) {
-            console.log("Palla parata!");
-            ballTween.stop();
-        }
+        
+    bodyTweenStart.onComplete(() => {
+    setTimeout(() => {
+        resetBonePositions();
+        }, 3000); // Ritardo di 1 secondo
     });
+
+
+
+    
+        // Funzione per ripristinare la posizione originale delle ossa
+        const resetBonePositions = () => {
+            const resetTime = 500; // Tempo per tornare alla posizione originale    
+            // Rotazioni originali
+            const originalSpineRotation = { x: 0, y: 0, z: 0 }; // Posizione originale della colonna vertebrale
+            const originalPelvisRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del bacino
+            const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del braccio
+            const originalThighRotation = { x:3.1, y: 0, z: 0 }; // Posizione originale della coscia  
+            const originalBodyStartPosition = { x: luigi.mesh.position.x, y:luigi.mesh.position.y, z: luigi.mesh.position.z };
+
+            // Tween per ripristinare la colonna vertebrale
+            const spineTweenReset = new TWEEN.Tween(luigi.bones.spine.rotation)
+                .to(originalSpineRotation, resetTime)
+                .onUpdate(() => {
+                    luigi.bones.spine.rotation.x = degToRad(spineTweenReset._object.x);
+                    luigi.bones.spine.rotation.y = degToRad(spineTweenReset._object.y);
+                    luigi.bones.spine.rotation.z = degToRad(spineTweenReset._object.z);
+                })
+                .start();   
+            // Tween per ripristinare il bacino
+            const pelvisTweenReset = new TWEEN.Tween(luigi.bones.pelvis.rotation)
+                .to(originalPelvisRotation, resetTime)
+                .onUpdate(() => {
+                    luigi.bones.pelvis.rotation.x = degToRad(pelvisTweenReset._object.x);
+                    luigi.bones.pelvis.rotation.y = degToRad(pelvisTweenReset._object.y);
+                    luigi.bones.pelvis.rotation.z = degToRad(pelvisTweenReset._object.z);
+                })
+                .start();   
+            // Tween per ripristinare i bracci
+            const upperArmTweenReset = new TWEEN.Tween(luigi.bones.left_upperarm.rotation)
+                .to(originalUpperArmRotation, resetTime)
+                .onUpdate(() => {
+                    luigi.bones.left_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x);
+                    luigi.bones.left_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y);
+                    luigi.bones.left_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z);
+
+                    luigi.bones.right_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x);
+                    luigi.bones.right_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y);
+                    luigi.bones.right_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z);
+                })
+                .start();   
+            // Tween per ripristinare le cosce
+            const thighTweenReset = new TWEEN.Tween(luigi.bones.left_thigh.rotation)
+                .to(originalThighRotation, resetTime)
+                .onUpdate(() => {
+                    luigi.bones.left_thigh.rotation.z = degToRad(thighTweenReset._object.z);
+                    luigi.bones.right_thigh.rotation.z = degToRad(thighTweenReset._object.z);
+                })
+                .start();  
+
+
+            const bodyResetTween = new TWEEN.Tween(luigi.mesh.position)
+            .to(originalBodyStartPosition, resetTime)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                luigi.mesh.position.x = bodyResetTween._object.x;
+                luigi.mesh.position.y = bodyResetTween._object.y;
+                luigi.mesh.position.z = bodyResetTween._object.z;
+            })
+                .start();
+        };  
+
+
+        
+        
+        
+ 
+    
+       
+        
 
     
     // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
     characterCurrentAnimationTweens.push(spineTween);
-    characterCurrentAnimationTweens.push(bodyTween);
+    characterCurrentAnimationTweens.push(bodyTweenStart);
     characterCurrentAnimationTweens.push(pelvisTween);
     characterCurrentAnimationTweens.push(upperArmTweenStart);
     characterCurrentAnimationTweens.push(thighTweenStart);
+
+
+    return saveDirection;
 }
+
+
+
+
+
+export function ballAnimation(tiroMario, parataLuigi){
+
+    let ballTween;
+    let ballRotationTween;
+    let reboundTween;
+    let trajectory;
+    let bounceHeight;
+
+    if(tiroMario == parataLuigi){
+
+        // Definizione delle traiettorie
+        switch (tiroMario) {
+            case 'F':
+                console.log("Tiro Forte");
+                bounceHeight = 15;
+                trajectory = {
+                    positionEnd: { x: palla.position.x + 27, y: palla.position.y + 15, z: palla.position.z + 110 },
+                    rotationEnd: { x: 360, y: 0, z: 360 }
+                };
+                break;
+            case 'G':
+                console.log("Tiro a giro");
+                bounceHeight = 15;
+                trajectory = {
+                    positionEnd: { x: palla.position.x - 27, y: palla.position.y +15 , z: palla.position.z + 110 },
+                    rotationEnd: { x: 0, y: 360, z: 0 }
+                };
+                break;
+            case 'B':
+                console.log("Tiro all'angolino");
+                bounceHeight = 0
+                trajectory = {
+                    positionEnd: { x: palla.position.x -27, y: palla.position.y , z: palla.position.z + 110 },
+                    rotationEnd: { x: 0, y: 0, z: 360 }
+                };
+                break;
+            default:
+                console.error("Tiro non riconosciuto");
+                return;
+        }
+
+    } else {
+    
+        // Definizione delle traiettorie
+        switch (tiroMario) {
+            case 'F':
+                console.log("Tiro Forte");
+                bounceHeight = 15;
+                trajectory = {
+                    positionEnd: { x: palla.position.x + 27, y: palla.position.y +14.8, z: palla.position.z + 122 },
+                    rotationEnd: { x: 0, y: 0, z: 360 }
+                };
+                break;
+            case 'G':
+                console.log("Tiro a Giro");
+                bounceHeight = 15;
+                trajectory = {
+                    positionEnd: { x: palla.position.x - 27, y: palla.position.y + 14.8 , z: palla.position.z + 122 },
+                    rotationEnd: { x: 0, y: 360, z: 0 }
+                };
+                break;
+            case 'B':
+                console.log("Tiro all'angolino");
+                bounceHeight = 0
+                trajectory = {
+                    positionEnd: { x: palla.position.x -27, y: palla.position.y, z: palla.position.z + 122 },
+                    rotationEnd: { x: 0, y: 0, z: 360 }
+                };
+                break;
+            default:
+                console.error("Tiro non riconosciuto");
+                return;
+        }
+
+
+    }
+
+    
+
+        var animationTime = 700; // Durata dell'animazione in millisecondi
+
+
+        /* ----- MOVIMENTO DELLA PALLA ----- */
+        var ballPositionStart = { x: palla.position.x, y: palla.position.y, z: palla.position.z };
+        var ballPositionEnd = trajectory.positionEnd;
+        var ballRotationStart = { x: 0, y: 0, z: 0 };
+        var ballRotationEnd = trajectory.rotationEnd;
+
+        ballTween = new TWEEN.Tween(ballPositionStart)
+            .to(ballPositionEnd, animationTime)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                palla.position.x = ballPositionStart.x;
+                palla.position.y = ballPositionStart.y;
+                palla.position.z = ballPositionStart.z;
+            })
+            .onComplete(() => {
+                
+            })
+            .start();
+
+        ballRotationTween = new TWEEN.Tween(ballRotationStart)
+            .to(ballRotationEnd, animationTime)
+            .easing(TWEEN.Easing.Linear.None)
+            .onUpdate(function () {
+                palla.rotation.x = degToRad(ballRotationStart.x);
+                palla.rotation.y = degToRad(ballRotationStart.y);
+                palla.rotation.z = degToRad(ballRotationStart.z);
+            })
+            .start();
+
+
+        
+    bounceBall(bounceHeight);
+
+   
+    
+    characterCurrentAnimationTweens = [];
+    characterCurrentAnimationTweens.push(ballTween);
+    characterCurrentAnimationTweens.push(ballRotationTween);
+    characterCurrentAnimationTweens.push(reboundTween);
+
+}
+
+
+
+
+
+
+function bounceBall(bounceHeight) {
+    const groundY = 2.9;
+
+    function simulateBounce() {
+        let currentHeight = bounceHeight;
+        let gravity = 9.8;
+
+        function bounce() {
+            if (currentHeight < 0.1) return;
+
+            let timeUp = Math.sqrt((2 * currentHeight) / gravity);
+            let timeDown = timeUp;
+
+            let bounceUp = new TWEEN.Tween({ y: groundY })
+                .to({ y: groundY + currentHeight }, timeUp * 500)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onUpdate(function (object) {
+                    palla.position.y = object.y;
+                });
+
+            let bounceDown = new TWEEN.Tween({ y: groundY + currentHeight })
+                .to({ y: groundY }, timeDown * 500)
+                .easing(TWEEN.Easing.Quadratic.In)
+                .onUpdate(function (object) {
+                    palla.position.y = object.y;
+                });
+
+            bounceUp.chain(bounceDown);
+            bounceUp.start();
+
+            currentHeight *= 0.5;
+            bounceDown.onComplete(bounce);
+        }
+
+        bounce();
+    }
+
+    simulateBounce();
+}
+
+
+
+
+
+document.addEventListener('keydown', (event) => {
+    const validKeys = ['f', 'g', 'b'];
+    if (validKeys.includes(event.key.toLowerCase())) {
+        marioKickBallAnimation(event.key.toUpperCase());
+    }
+});
 
 
 /*
@@ -857,20 +1029,6 @@ export function luigiSaveAttempt() {
     characterCurrentAnimationTweens.push(bodyTween);
 }*/
 
-
-
-
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'f' || event.key === 'g' || event.key === 'b') {
-        marioKickBallAnimation(event.key.toUpperCase());
-    }
-
-    setTimeout(() => {
-    luigiSaveAttempt();
-    }, 1000);
-    
-});
 
     
 
