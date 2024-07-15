@@ -1,8 +1,8 @@
 import * as THREE from './utils/three.module.js';
 
 
-let models = {}; // Oggetto per memorizzare i modelli
-var mario, luigi, palla, rete, prato, forest;
+let models = {}; 
+var mario, luigi, palla, rete, prato, forest, forest1, forest2, forest3;
 let characterCurrentAnimationTweens = {};
 let key;
 
@@ -13,6 +13,9 @@ export function initCharacters(loadedModels, scene) {
     mario = models.mario;
     luigi = models.luigi;
     forest = models.forest;
+    forest1 = models.forest1;
+    forest2 = models.forest2;
+    forest3 = models.forest3;
     prato = models.penalty_area ? models.penalty_area.getObjectByName('Plane001') : null;
     palla = models.penalty_area ? models.penalty_area.getObjectByName('Sphere001') : null; // Assign palla correctly
     rete = models.penalty_area ? models.penalty_area.getObjectByName('Box012') : null; // Assign palla correctly
@@ -95,15 +98,63 @@ export function initCharacters(loadedModels, scene) {
         forest.mesh = new THREE.Object3D();
         forest.mesh.name = "forest";
         // Aggiungi il corpo del modello a mesh di Mario
-        forest.scale.set(120, 50, 70);
+        forest.scale.set(100, 50, 70);
         // Altri setup per Mario se necessario
-        forest.position.set(80, 18, 150);
+        forest.position.set(72, 17, 125);
         forest.rotation.set(0,-20.4,0 )
         scene.add(forest.mesh);
 
     } else {
         console.error("Forest not found in loaded models.");
     }
+
+    if (forest1) {
+        forest1.mesh = new THREE.Object3D();
+        forest1.mesh.name = "forest1";
+        // Aggiungi il corpo del modello a mesh di Mario
+        forest1.scale.set(120, 50, 70);
+        // Altri setup per Mario se necessario
+        forest1.position.set(-140, 17, 125);
+        forest1.rotation.set(0,-20.4,0 )
+        scene.add(forest1.mesh);
+
+    } else {
+        console.error("Forest not found in loaded models.");
+    }
+
+    if (forest2) {
+        forest2.mesh = new THREE.Object3D();
+        forest2.mesh.name = "forest2";
+        // Aggiungi il corpo del modello a mesh di Mario
+        forest2.scale.set(55, 50, 70);
+        // Altri setup per Mario se necessario
+        forest2.position.set(-45, 15, 155);
+        forest2.rotation.set(0,0,0 )
+        scene.add(forest2.mesh);
+
+    } else {
+        console.error("Forest not found in loaded models.");
+    }
+
+
+
+    if (forest3) {
+        forest3.mesh = new THREE.Object3D();
+        forest3.mesh.name = "forest3";
+        // Aggiungi il corpo del modello a mesh di Mario
+        forest3.scale.set(65, 50, 70);
+        // Altri setup per Mario se necessario
+        forest3.position.set(82, 17, -24);
+        forest3.rotation.set(0,-20.4,0 )
+        scene.add(forest3.mesh);
+
+    } else {
+        console.error("Forest not found in loaded models.");
+    }
+    
+
+
+  
 
     
 

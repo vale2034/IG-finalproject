@@ -121,7 +121,12 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
     ] },
     { name: 'luigi', url: 'models/luigi/scene.gltf', scale: 1.25, namesToRemove: [] },
     { name: 'mario', url: 'models/mario/scene.gltf', scale: 0.19, namesToRemove: [] },
-    { name:'forest', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: []}
+    { name:'forest', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: ['pPlane3', 'pPlane4']},
+    { name:'forest1', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: ['pPlane3', 'pPlane4', 'pPlane5']},
+    { name:'forest2', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: ['pPlane3', 'pPlane4','pPlane5']},
+    { name:'forest3', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: ['pPlane3', 'pPlane4']}
+    
+
 ];
 
 
