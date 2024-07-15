@@ -2,3 +2,25 @@ body {
     margin: 0;
     overflow: hidden;
 }
+
+#camera-coordinates {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: black;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    font-family: Arial, sans-serif;
+}
+
+#instructions {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    z-index: 10; /* Ensure it appears above other elements */
+}
