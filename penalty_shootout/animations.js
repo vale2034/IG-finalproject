@@ -407,7 +407,6 @@ export function marioKickBallAnimation(key) {
     footTweenStart.chain(footTweenEnd);
 
     
-
     
     // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
     characterCurrentAnimationTweens = [];
@@ -425,15 +424,20 @@ export function marioKickBallAnimation(key) {
 
 
     if(tiroMario == parataLuigi){
-        //animazione Luigi festeggia per la parata 
+        setTimeout(() => {
+            celebrate(luigi);
+            defeat(mario); // Mario esce sconfitto
+        },1100 );
         console.log("CHE PARATA DI LUIGI")
     } else {
-        //mario festeggia per il goal 
+        setTimeout(() => {
+            celebrate(mario);
+            defeat(luigi); // Mario esce sconfitto
+        },1100 );
         console.log("CHE GRAN GOAL DI MARIO")
     }
     
 }
-
 
 
 
@@ -592,7 +596,7 @@ export function luigiSaveAttempt(){
 
     
     
-    // --------------------------------------------- LEGS MOVEMENT ----------------------------------------------- //
+    // --------------------------------------------- THIGH MOVEMENT ----------------------------------------------- //
 
   
 
@@ -608,40 +612,7 @@ export function luigiSaveAttempt(){
     })
     .start();
 
-    
-    
-
-
-     /*
-    //----------------------------------------------------------- CALF------------------------------------------------- //
-    var calfMaxAngle = -50;
-
-    var calfRotationStart = {x:-calfMaxAngle, y:0, z:0};
-    var calfTweenStart = new TWEEN.Tween(calfRotationStart)
-    .to({x:0, y:0, z:0}, animationTime)
-    .easing(TWEEN.Easing.Quadratic.In)
-    .onUpdate(function() {
-        luigi.bones.left_calf.rotation.x = degToRad(-(calfMaxAngle+calfRotationStart.x));
-        luigi.bones.right_calf.rotation.x = degToRad(calfRotationStart.x);
-    })
-    .start();
-
-    var calfRotationEnd = {x:0, y:0, z:0};
-    var calfTweenEnd = new TWEEN.Tween(calfRotationEnd)
-    .to({x:-calfMaxAngle, y:0, z:0}, animationTime)
-    .easing(TWEEN.Easing.Quadratic.Out)
-    .onUpdate(function() {
-        luigi.bones.left_calf.rotation.x = degToRad(-(calfMaxAngle+calfRotationEnd.x));
-        luigi.bones.right_calf.rotation.x = degToRad(calfRotationEnd.x);
-    })
-    .start();
-
-    calfTweenEnd.chain(calfTweenStart);
-    
-
-    // ---------------------------------------------- BODY MOVEMENT --------------------------------------------- //
-
-    */
+   
     // Tween per la posizione del corpo
     var bodyMaxPosition = 3;
     
@@ -659,86 +630,8 @@ export function luigiSaveAttempt(){
         })
         .start();
 
-
         
-    bodyTweenStart.onComplete(() => {
-    setTimeout(() => {
-        resetBonePositions();
-        }, 3000); // Ritardo di 1 secondo
-    });
-
-
-
-    
-        // Funzione per ripristinare la posizione originale delle ossa
-        const resetBonePositions = () => {
-            const resetTime = 500; // Tempo per tornare alla posizione originale    
-            // Rotazioni originali
-            const originalSpineRotation = { x: 0, y: 0, z: 0 }; // Posizione originale della colonna vertebrale
-            const originalPelvisRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del bacino
-            const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del braccio
-            const originalThighRotation = { x:3.1, y: 0, z: 0 }; // Posizione originale della coscia  
-            const originalBodyStartPosition = { x: luigi.mesh.position.x, y:luigi.mesh.position.y, z: luigi.mesh.position.z };
-
-            // Tween per ripristinare la colonna vertebrale
-            const spineTweenReset = new TWEEN.Tween(luigi.bones.spine.rotation)
-                .to(originalSpineRotation, resetTime)
-                .onUpdate(() => {
-                    luigi.bones.spine.rotation.x = degToRad(spineTweenReset._object.x);
-                    luigi.bones.spine.rotation.y = degToRad(spineTweenReset._object.y);
-                    luigi.bones.spine.rotation.z = degToRad(spineTweenReset._object.z);
-                })
-                .start();   
-            // Tween per ripristinare il bacino
-            const pelvisTweenReset = new TWEEN.Tween(luigi.bones.pelvis.rotation)
-                .to(originalPelvisRotation, resetTime)
-                .onUpdate(() => {
-                    luigi.bones.pelvis.rotation.x = degToRad(pelvisTweenReset._object.x);
-                    luigi.bones.pelvis.rotation.y = degToRad(pelvisTweenReset._object.y);
-                    luigi.bones.pelvis.rotation.z = degToRad(pelvisTweenReset._object.z);
-                })
-                .start();   
-            // Tween per ripristinare i bracci
-            const upperArmTweenReset = new TWEEN.Tween(luigi.bones.left_upperarm.rotation)
-                .to(originalUpperArmRotation, resetTime)
-                .onUpdate(() => {
-                    luigi.bones.left_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x);
-                    luigi.bones.left_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y);
-                    luigi.bones.left_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z);
-
-                    luigi.bones.right_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x);
-                    luigi.bones.right_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y);
-                    luigi.bones.right_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z);
-                })
-                .start();   
-            // Tween per ripristinare le cosce
-            const thighTweenReset = new TWEEN.Tween(luigi.bones.left_thigh.rotation)
-                .to(originalThighRotation, resetTime)
-                .onUpdate(() => {
-                    luigi.bones.left_thigh.rotation.z = degToRad(thighTweenReset._object.z);
-                    luigi.bones.right_thigh.rotation.z = degToRad(thighTweenReset._object.z);
-                })
-                .start();  
-
-
-            const bodyResetTween = new TWEEN.Tween(luigi.mesh.position)
-            .to(originalBodyStartPosition, resetTime)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(() => {
-                luigi.mesh.position.x = bodyResetTween._object.x;
-                luigi.mesh.position.y = bodyResetTween._object.y;
-                luigi.mesh.position.z = bodyResetTween._object.z;
-            })
-                .start();
-        };  
-
-
-        
-        
-        
- 
-    
-       
+      
         
 
     
@@ -884,6 +777,199 @@ export function ballAnimation(tiroMario, parataLuigi){
 
 
 
+function celebrate(character) {
+
+    const jumpHeight = 3; // Altezza del salto
+    const jumpTime = 300; // Tempo per un salto completo (su e giù)
+   
+
+    const upPosition = { y: character.mesh.position.y + jumpHeight }; // Posizione in alto
+    const downPosition = { y: character.mesh.position.y }; // Torna alla posizione iniziale
+
+        
+     // Funzione per ripristinare la posizione originale delle ossa
+     const resetBonePositions = () => {
+             const resetTime = 500; // Tempo per ripristinare le rotazioni
+            // Rotazioni originali
+             const originalSpineRotation = { x: 0, y: 0, z: 0 }; // Posizione originale della colonna vertebrale
+             const originalPelvisRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del bacino
+             const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del braccio
+             const originalThighRotation = { x:3.1, y: 0, z: 0 }; // Posizione originale della coscia  
+             const originalBodyStartPosition = { x: character.mesh.position.x, y:character.mesh.position.y +3, z: character.mesh.position.z };
+             // Tween per ripristinare la colonna vertebrale
+             const spineTweenReset = new TWEEN.Tween(character.bones.spine.rotation)
+                 .to(originalSpineRotation, resetTime)
+                 .onUpdate(() => {
+                     character.bones.spine.rotation.x = degToRad(spineTweenReset._object.x);
+                     character.bones.spine.rotation.y = degToRad(spineTweenReset._object.y);
+                     character.bones.spine.rotation.z = degToRad(spineTweenReset._object.z);
+                 })
+                 .start();   
+             // Tween per ripristinare il bacino
+             const pelvisTweenReset = new TWEEN.Tween(character.bones.pelvis.rotation)
+                 .to(originalPelvisRotation, resetTime)
+                 .onUpdate(() => {
+                     character.bones.pelvis.rotation.x = degToRad(pelvisTweenReset._object.x);
+                     character.bones.pelvis.rotation.y = degToRad(pelvisTweenReset._object.y);
+                     character.bones.pelvis.rotation.z = degToRad(pelvisTweenReset._object.z);
+                 })
+                 .start();   
+             // Tween per ripristinare i bracci
+             const upperArmTweenReset = new TWEEN.Tween(character.bones.left_upperarm.rotation)
+                 .to(originalUpperArmRotation, resetTime)
+                 .onUpdate(() => {
+                     character.bones.left_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x + 10);
+                     character.bones.left_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y - 25);
+                     character.bones.left_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z - 25);
+                     character.bones.right_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x + 10);
+                     character.bones.right_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y -25);
+                     character.bones.right_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z -25);
+                 })
+                 .start();   
+             // Tween per ripristinare le cosce
+             const thighTweenReset = new TWEEN.Tween(character.bones.left_thigh.rotation)
+                 .to(originalThighRotation, resetTime)
+                 .onUpdate(() => {
+                    character.bones.left_thigh.rotation.z = degToRad(thighTweenReset._object.z -25);
+                    character.bones.left_thigh.rotation.x = degToRad(thighTweenReset._object.x +180);
+                    character.bones.right_thigh.rotation.z = degToRad(thighTweenReset._object.z -25);
+                 })
+                 .start();  
+             const bodyResetTween = new TWEEN.Tween(character.mesh.position)
+             .to(originalBodyStartPosition, resetTime)
+             .easing(TWEEN.Easing.Quadratic.Out)
+             .onUpdate(() => {
+                character.mesh.position.x = bodyResetTween._object.x;
+                character.mesh.position.y = bodyResetTween._object.y;
+                character.mesh.position.z = bodyResetTween._object.z;
+             })
+            .start();
+     };  
+
+         
+     function jump() {
+        const upTween = new TWEEN.Tween(character.mesh.position)
+            .to(upPosition, jumpTime)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(() => {
+                character.mesh.position.y = upTween._object.y;
+            })
+            .onComplete(() => {
+                downTween.start();
+            });
+
+        const downTween = new TWEEN.Tween(character.mesh.position)
+            .to(downPosition, jumpTime)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(() => {
+                character.mesh.position.y = downTween._object.y;
+            })
+            .onComplete(() => {
+                upTween.start();
+            });
+
+        upTween.start();
+    }
+
+    // Avvia il primo salto
+    jump();
+
+    resetBonePositions();
+
+}
+
+
+
+
+function defeat(character) {
+    const spinTime = 1000; // Tempo per una rotazione completa
+
+    // Funzione per ripristinare la posizione originale delle ossa
+    const resetBonePositions = () => {
+        const resetTime = 500; // Tempo per ripristinare le rotazioni
+       // Rotazioni originali
+        const originalSpineRotation = { x: 0, y: 0, z: 0 }; // Posizione originale della colonna vertebrale
+        const originalPelvisRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del bacino
+        const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del braccio
+        const originalThighRotation = { x:3.1, y: 0, z: 0 }; // Posizione originale della coscia  
+        const originalBodyStartPosition = { x: character.mesh.position.x, y:character.mesh.position.y, z: character.mesh.position.z };
+        // Tween per ripristinare la colonna vertebrale
+        const spineTweenReset = new TWEEN.Tween(character.bones.spine.rotation)
+            .to(originalSpineRotation, resetTime)
+            .onUpdate(() => {
+                character.bones.spine.rotation.x = degToRad(spineTweenReset._object.x + 50);
+                character.bones.spine.rotation.y = degToRad(spineTweenReset._object.y);
+                character.bones.spine.rotation.z = degToRad(spineTweenReset._object.z);
+            })
+            .start();   
+        // Tween per ripristinare il bacino
+        const pelvisTweenReset = new TWEEN.Tween(character.bones.pelvis.rotation)
+            .to(originalPelvisRotation, resetTime)
+            .onUpdate(() => {
+                character.bones.pelvis.rotation.x = degToRad(pelvisTweenReset._object.x);
+                character.bones.pelvis.rotation.y = degToRad(pelvisTweenReset._object.y);
+                character.bones.pelvis.rotation.z = degToRad(pelvisTweenReset._object.z);
+            })
+            .start();   
+        // Tween per ripristinare i bracci
+        const upperArmTweenReset = new TWEEN.Tween(character.bones.left_upperarm.rotation)
+            .to(originalUpperArmRotation, resetTime)
+            .onUpdate(() => {
+                character.bones.left_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x - 100);
+                character.bones.left_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y - 20);
+                character.bones.left_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z - 60);
+                character.bones.right_upperarm.rotation.x = degToRad(upperArmTweenReset._object.x - 100);
+                character.bones.right_upperarm.rotation.y = degToRad(upperArmTweenReset._object.y - 20);
+                character.bones.right_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z - 60);
+            })
+            .start();   
+        // Tween per ripristinare le cosce
+        const thighTweenReset = new TWEEN.Tween(character.bones.left_thigh.rotation)
+            .to(originalThighRotation, resetTime)
+            .onUpdate(() => {
+               character.bones.left_thigh.rotation.z = degToRad(thighTweenReset._object.z -25);
+               character.bones.left_thigh.rotation.x = degToRad(thighTweenReset._object.x +180);
+               character.bones.right_thigh.rotation.z = degToRad(thighTweenReset._object.z -25);
+            })
+            .start();  
+        const bodyResetTween = new TWEEN.Tween(character.mesh.position)
+        .to(originalBodyStartPosition, resetTime)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+           character.mesh.position.x = bodyResetTween._object.x;
+           character.mesh.position.y = bodyResetTween._object.y+3;
+           character.mesh.position.z = bodyResetTween._object.z;
+        })
+            .start();
+    };  
+
+
+
+    function spin() {
+        const startRotation = { y: character.mesh.rotation.y }; // Rotazione iniziale
+        const endRotation = { y: character.mesh.rotation.y + 2 * Math.PI }; // Rotazione completa (360 gradi)
+
+        const spinTween = new TWEEN.Tween(startRotation)
+            .to(endRotation, spinTime)
+            .easing(TWEEN.Easing.Linear.None)
+            .onUpdate(() => {
+                character.mesh.rotation.y = startRotation.y;
+            })
+            .onComplete(() => {
+                spin(); // Ripeti la rotazione
+            });
+
+        spinTween.start();
+    }
+
+    // Avvia la prima rotazione
+    spin();
+
+    // Restart bones: 
+    resetBonePositions();
+}
+
+
 
 
 function bounceBall(bounceHeight) {
@@ -929,154 +1015,11 @@ function bounceBall(bounceHeight) {
 
 
 
-
 document.addEventListener('keydown', (event) => {
     const validKeys = ['f', 'g', 'b'];
     if (validKeys.includes(event.key.toLowerCase())) {
         marioKickBallAnimation(event.key.toUpperCase());
     }
 });
-
-
-/*
-export function luigiSaveAttempt() {
-    console.log("Luigi is trying to save the ball!");
-
-    if (!luigi || !luigi.mesh) {
-        console.error('Luigi is not initialized');
-        return;
-    }
-
-    // Calcola la distanza tra Luigi e la palla
-    const distance = luigi.mesh.position.distanceTo(palla.position);
-
-    // Definisci una distanza massima per poter parare
-    const saveDistance = 10; // Modifica questo valore secondo necessità
-
-    if (distance > saveDistance) {
-        console.log("La palla è troppo lontana per essere parata.");
-        return; // Esci se la palla è troppo lontana
-    }
-
-    characterReset(luigi);
-
-    const animationTime = 1000;
-
-    // Scegliere una traiettoria casuale per il tiro
-    const randomSave = Math.random();
-    let saveDirection;
-
-    if (randomSave < 0.33) {
-        saveDirection = 'F'; // Parata per il tiro forte
-    } else if (randomSave < 0.66) {
-        saveDirection = 'G'; // Parata per il tiro a giro
-    } else {
-        saveDirection = 'B'; // Parata per il tiro basso
-    }
-
-    let savePosition;
-    switch (saveDirection) {
-        case 'F':
-            savePosition = { x: 20, y: 10, z: 122 }; // Posizione per tiro forte
-            break;
-        case 'G':
-            savePosition = { x: -20, y: 10, z: 122 }; // Posizione per tiro a giro
-            break;
-        case 'B':
-            savePosition = { x: 0, y: 5, z: 122 }; // Posizione per tiro basso
-            break;
-        default:
-            console.error("Tipo di parata non riconosciuto");
-            return;
-    }
-
-    // Animazione delle braccia e del corpo di Luigi per la parata
-    const armStartRotation = { x: 0, y: 0, z: 0 };
-    const armEndRotation = { x: -30, y: 0, z: 0 };
-
-    const armTween = new TWEEN.Tween(armStartRotation)
-        .to(armEndRotation, animationTime / 2)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            luigi.bones.left_forearm.rotation.x = degToRad(armStartRotation.x);
-            luigi.bones.right_forearm.rotation.x = degToRad(armStartRotation.x);
-        })
-        .start();
-
-    // Tween per la posizione del corpo
-    const bodyStartPosition = { x: luigi.mesh.position.x, y: luigi.mesh.position.y, z: luigi.mesh.position.z };
-    const bodyEndPosition = savePosition;
-
-    const bodyTween = new TWEEN.Tween(bodyStartPosition)
-        .to(bodyEndPosition, animationTime)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            luigi.mesh.position.x = bodyStartPosition.x;
-            luigi.mesh.position.y = bodyStartPosition.y;
-            luigi.mesh.position.z = bodyStartPosition.z;
-        })
-        .start();
-
-    // Completamento dell'animazione
-    bodyTween.onComplete(() => {
-        console.log("Luigi ha tentato di parare la palla!");
-        // Logica aggiuntiva per verificare se la parata ha avuto successo
-    });
-
-    // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
-    characterCurrentAnimationTweens = [];
-    characterCurrentAnimationTweens.push(armTween);
-    characterCurrentAnimationTweens.push(bodyTween);
-}*/
-
-
-    
-
-/*savePosition = { x: -20, y: 5, z: 70 }; // Posizione per tiro forte
-console.log("Prova a parare tiro forte")
-break;
-case 'G':
-savePosition = { x: -70, y: 5, z: 70 }; // Posizione per tiro a giro
-console.log("Prova a parare tiro a giro")
-break;
-case 'B':
-savePosition = { x: -70, y: 0, z: 70 }; // Posizione per tiro basso
-console.log("Prova a parare tiro basso")*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
