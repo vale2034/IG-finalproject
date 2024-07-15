@@ -2,7 +2,7 @@ import * as THREE from './utils/three.module.js';
 
 
 let models = {}; // Oggetto per memorizzare i modelli
-var mario, luigi, palla, rete, prato;
+var mario, luigi, palla, rete, prato, forest;
 let characterCurrentAnimationTweens = {};
 let key;
 
@@ -12,6 +12,7 @@ export function initCharacters(loadedModels, scene) {
     models = loadedModels;
     mario = models.mario;
     luigi = models.luigi;
+    forest = models.forest;
     prato = models.penalty_area ? models.penalty_area.getObjectByName('Plane001') : null;
     palla = models.penalty_area ? models.penalty_area.getObjectByName('Sphere001') : null; // Assign palla correctly
     rete = models.penalty_area ? models.penalty_area.getObjectByName('Box012') : null; // Assign palla correctly
@@ -88,6 +89,23 @@ export function initCharacters(loadedModels, scene) {
     } else {
         console.error("Rete not found in loaded models.");
     }
+
+
+    if (forest) {
+        forest.mesh = new THREE.Object3D();
+        forest.mesh.name = "forest";
+        // Aggiungi il corpo del modello a mesh di Mario
+        forest.scale.set(120, 50, 70);
+        // Altri setup per Mario se necessario
+        forest.position.set(80, 18, 150);
+        forest.rotation.set(0,-20.4,0 )
+        scene.add(forest.mesh);
+
+    } else {
+        console.error("Forest not found in loaded models.");
+    }
+
+    
 
 
     

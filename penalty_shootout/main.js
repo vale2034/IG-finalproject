@@ -120,7 +120,8 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
         'Object_9'
     ] },
     { name: 'luigi', url: 'models/luigi/scene.gltf', scale: 1.25, namesToRemove: [] },
-    { name: 'mario', url: 'models/mario/scene.gltf', scale: 0.19, namesToRemove: [] }
+    { name: 'mario', url: 'models/mario/scene.gltf', scale: 0.19, namesToRemove: [] },
+    { name:'forest', url: 'models/forest/scene.gltf', scale: 0.0, namesToRemove: []}
 ];
 
 
