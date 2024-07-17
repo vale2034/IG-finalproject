@@ -16,9 +16,9 @@ export function initCharacters(loadedModels, scene) {
     forest1 = models.forest1;
     forest2 = models.forest2;
     forest3 = models.forest3;
-    prato = models.penalty_area ? models.penalty_area.getObjectByName('Plane001') : null;
-    palla = models.penalty_area ? models.penalty_area.getObjectByName('Sphere001') : null; // Assign palla correctly
-    rete = models.penalty_area ? models.penalty_area.getObjectByName('Box012') : null; // Assign palla correctly
+    prato =  models.penalty_area.getObjectByName('Plane001') ;
+    palla =  models.penalty_area.getObjectByName('Sphere001') ;
+    rete =  models.penalty_area.getObjectByName('Box012') ;
     mario.bones = {};
     luigi.bones = {};
     if (mario) {
@@ -596,6 +596,7 @@ export function marioKickBallAnimation(key) {
             .start();
 
         legTweenStart.chain(legTweenEnd);
+        leftLegTweenStart.chain(leftLegTweenEnd);
        
        
 
