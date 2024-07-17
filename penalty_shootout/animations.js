@@ -27,15 +27,15 @@ export function initCharacters(loadedModels, scene) {
         mario.mesh = new THREE.Object3D();
         mario.mesh.name = "mario";
         // Aggiungi il corpo del modello a mesh di Mario
-        let marioBody = mario.getObjectByName("RootNode");
-        marioBody.scale.set(0.19, 0.19, 0.19);
+        let corpo_mario = mario.getObjectByName("RootNode");
+        corpo_mario.scale.set(0.19, 0.19, 0.19);
         // Altri setup per Mario se necessario
-        mario.mesh.add(marioBody);
-        mario.mesh.position.set(-40, 0.1, -55);
+        mario.mesh.add(corpo_mario);
+        mario.mesh.position.set(-40, 0.1, -77);
         scene.add(mario.mesh);
         //console.log("Mario initialized:", mario);
         setCharacterBones(mario, boneMappingMario);
-        characterReset(mario);
+        resetPose(mario);
         
     } else {
         console.error("Mario model not found in loaded models.");
@@ -45,18 +45,18 @@ export function initCharacters(loadedModels, scene) {
         luigi.mesh = new THREE.Object3D();
         luigi.mesh.name = "luigi";
         // Aggiungi il corpo del modello a mesh di Luigi
-        let luigiBody = luigi.getObjectByName("RootNode");
-        luigiBody.scale.set(1.25, 1.25, 1.25);
+        let corpo_luigi = luigi.getObjectByName("RootNode");
+        corpo_luigi.scale.set(1.25, 1.25, 1.25);
         // Assicurati di usare il nome corretto nel tuo modello GLTF
-        luigi.mesh.add(luigiBody);
-        
+        luigi.mesh.add(corpo_luigi);
+
         // Altri setup per Luigi se necessario
         luigi.mesh.position.set(-43, 0, 65);
         luigi.mesh.rotation.set(-0.07,3.1,0);
         scene.add(luigi.mesh);
         //console.log("Luigi initialized:", luigi);
         setCharacterBones(luigi, boneMappingLuigi);
-        characterReset(luigi);
+        resetPose(luigi);
 
     } else {
         console.error("Luigi model not found in loaded models.");
@@ -127,6 +127,7 @@ export function initCharacters(loadedModels, scene) {
         forest2.mesh.name = "forest2";
         // Aggiungi il corpo del modello a mesh di Mario
         forest2.scale.set(55, 50, 70);
+        
         // Altri setup per Mario se necessario
         forest2.position.set(-45, 15, 155);
         forest2.rotation.set(0,0,0 )
@@ -145,7 +146,7 @@ export function initCharacters(loadedModels, scene) {
         forest3.scale.set(65, 50, 70);
         // Altri setup per Mario se necessario
         forest3.position.set(82, 17, -24);
-        forest3.rotation.set(0,-20.4,0 )
+        forest3.rotation.set(0,-20.4,0 );
         scene.add(forest3.mesh);
 
     } else {
@@ -273,7 +274,7 @@ function degToRad(degrees) {
 }
 
 // Funzione per resettare l'animazione del personaggio
-function characterReset(character) {
+function resetPose(character) {
     if (!character.mesh || !character.bones) {
         console.error('Mesh or bones not defined for character:', character);
         return;
@@ -322,6 +323,166 @@ function characterReset(character) {
 }
 
 
+function stopAllAnimations() {
+    TWEEN.removeAll();
+}
+
+export function marioRunShoot() {
+
+    if (!mario || !mario.mesh) {
+        console.error('Mario is not initialized');
+        return;
+    }
+
+    var animationTime = 800;
+    
+
+    //------------SPINA-----------// 
+    var spineMaxAngle = 50;
+
+    var spineRotationStart = {x: 0, y: spineMaxAngle, z: 0};
+    var spineTweenStart = new TWEEN.Tween(spineRotationStart)
+        .to({x: 0, y: -spineMaxAngle, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.spine.rotation.y = degToRad(spineRotationStart.y);
+        })
+        .start();
+
+    var spineRotationEnd = {x: 0, y: -spineMaxAngle, z: 0};
+    var spineTweenEnd = new TWEEN.Tween(spineRotationEnd)
+        .to({x: 0, y: spineMaxAngle, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.spine.rotation.y = degToRad(spineRotationEnd.y);
+        })
+        .start();
+
+    spineTweenStart.chain(spineTweenEnd);
+
+
+
+
+    //----------- Bacino ------------ //
+    var pelvisMaxAngle = -10;
+
+    var pelvisRotationStart = {x: 0, y: pelvisMaxAngle, z: 0};
+    var pelvisTweenStart = new TWEEN.Tween(pelvisRotationStart)
+        .to({x: 0, y: -pelvisMaxAngle, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.pelvis.rotation.y = degToRad(pelvisRotationStart.y);
+        })
+        .start();
+
+    var pelvisRotationEnd = {x: 0, y: -pelvisMaxAngle, z: 0};
+    var pelvisTweenEnd = new TWEEN.Tween(pelvisRotationEnd)
+        .to({x: 0, y: pelvisMaxAngle, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.pelvis.rotation.y = degToRad(pelvisRotationEnd.y);
+        })
+        .start();
+
+    pelvisTweenStart.chain(pelvisTweenEnd);
+ 
+
+
+     // ------- BRACCIA ----- //
+    var upperArmMaxAngleX = 30;
+    var upperArmMaxAngleY = 50;
+
+    var upperArmRotationStart = {x: upperArmMaxAngleX, y: upperArmMaxAngleY, z: 0};
+    var upperArmTweenStart = new TWEEN.Tween(upperArmRotationStart)
+        .to({x: -upperArmMaxAngleX, y: -upperArmMaxAngleY, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(function() {
+            mario.bones.left_upperarm.rotation.x = degToRad(upperArmRotationStart.x);
+            mario.bones.right_upperarm.rotation.x = degToRad(-upperArmRotationStart.x);
+            mario.bones.left_upperarm.rotation.y = degToRad(upperArmRotationStart.y);
+            mario.bones.right_upperarm.rotation.y = degToRad(-upperArmRotationStart.y);
+        })
+        .start();
+
+    var upperArmRotationEnd = {x: -upperArmMaxAngleX, y: -upperArmMaxAngleY, z: 0};
+    var upperArmTweenEnd = new TWEEN.Tween(upperArmRotationEnd)
+        .to({x: upperArmMaxAngleX, y: upperArmMaxAngleY, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(function() {
+            mario.bones.left_upperarm.rotation.x = degToRad(upperArmRotationEnd.x);
+            mario.bones.right_upperarm.rotation.x = degToRad(-upperArmRotationEnd.x);
+            mario.bones.left_upperarm.rotation.y = degToRad(upperArmRotationEnd.y);
+            mario.bones.right_upperarm.rotation.y = degToRad(-upperArmRotationEnd.y);
+        })
+        .start();
+
+    upperArmTweenStart.chain(upperArmTweenEnd);
+    
+
+
+
+   
+    // ---- GAMBE ---- //
+
+
+    var thighMaxAngle = -50;
+
+    var thighRotationStart = {x: thighMaxAngle, y: 0, z: 0};
+    var thighTweenStart = new TWEEN.Tween(thighRotationStart)
+        .to({x: -thighMaxAngle, y: 0, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.left_thigh.rotation.x = degToRad(180+ thighRotationStart.x);
+            mario.bones.right_thigh.rotation.x = degToRad(-thighRotationStart.x);
+        })
+        .start();
+
+    var thighRotationEnd = {x: -thighMaxAngle, y: 0, z: 0};
+    var thighTweenEnd = new TWEEN.Tween(thighRotationEnd)
+        .to({x: thighMaxAngle, y: 0, z: 0}, animationTime)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(function() {
+            mario.bones.left_thigh.rotation.x = degToRad(180+thighRotationEnd.x);
+            mario.bones.right_thigh.rotation.x = degToRad(-thighRotationEnd.x);
+        })
+        .start();
+
+    thighTweenStart.chain(thighTweenEnd);
+   
+
+
+    // ----------- CORPO -------------------- //
+
+    let kickPosition =  { x: -40, y: 0.1, z: -55 };
+
+    const bodyStartPosition = { x: mario.mesh.position.x, y:mario.mesh.position.y, z: mario.mesh.position.z };
+    const bodyEndPosition = kickPosition;
+    const bodyTweenStart= new TWEEN.Tween(bodyStartPosition)
+        .to(bodyEndPosition, animationTime)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(function () {
+            mario.mesh.position.x = bodyStartPosition.x;
+            mario.mesh.position.y = bodyStartPosition.y;
+            mario.mesh.position.z = bodyStartPosition.z;
+        })
+        .start();
+
+
+       
+
+    /* ----- ----- ----- */
+    characterCurrentAnimationTweens = [];
+    characterCurrentAnimationTweens.push(spineTweenStart, spineTweenEnd);
+    characterCurrentAnimationTweens.push(pelvisTweenStart, pelvisTweenEnd);
+    characterCurrentAnimationTweens.push(upperArmTweenStart, upperArmTweenEnd);
+    characterCurrentAnimationTweens.push(thighTweenStart, thighTweenEnd);
+    characterCurrentAnimationTweens.push(bodyTweenStart);
+
+}
+
+
+
+
 
 // Animazione di calcio per Mario
 export function marioKickBallAnimation(key) {
@@ -331,181 +492,192 @@ export function marioKickBallAnimation(key) {
         console.error('Mario is not initialized');
         return;
     }
-
-    // Calcola la distanza tra Mario e la palla
-    const distance = mario.mesh.position.distanceTo(palla.position);
-
-    // Definisci una distanza massima per poter calciare
-    const kickDistance = 10; // Modifica questo valore secondo necessità
-
-    if (distance > kickDistance) {
-        console.log("La palla è troppo lontana per essere calciata.");
-        return; // Esci se la palla è troppo lontana
-    }
-
-    characterReset(mario);
-
-    var animationTime = 1000; // Durata dell'animazione in millisecondi
-
-    /* ----- Coordinazione per il tiro ----- */
-
-    //START - ARMS 
-    var MaxAngle = -30;
-
-    var RightArmRotationStart = { x: 2, y: -2, z: 0 };
-    var LeftArmRotationStart = { x: 2, y: -2, z: 0 };
-    var LeftArmTweenStart = new TWEEN.Tween(LeftArmRotationStart)
-        .to({ x: -MaxAngle, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            mario.bones.left_forearm.rotation.x = degToRad(LeftArmRotationStart.x);
-            mario.bones.left_upperarm.rotation.x = degToRad(LeftArmRotationStart.x);
-        })
-        .start();
-    var RightArmTweenStart = new TWEEN.Tween(RightArmRotationStart)
-        .to({ x: -MaxAngle, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            mario.bones.right_forearm.rotation.x = degToRad(RightArmRotationStart.x);
-            mario.bones.right_upperarm.rotation.x = degToRad(RightArmRotationStart.x);
-        })
-        .start();
-
-
-    //END - ARMS
-    var RightArmRotationEnd = { x: -MaxAngle, y: 0, z: 0 };
-    var LeftArmRotationEnd = { x: -MaxAngle, y: 0, z: 0 };
-    var RightArmTweenEnd = new TWEEN.Tween(RightArmRotationEnd)
-        .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.In)
-        .onUpdate(function () {
-            mario.bones.right_forearm.rotation.x = degToRad(RightArmRotationEnd.x);
-            mario.bones.right_upperarm.rotation.x = degToRad(RightArmRotationEnd.x);
-        })
-        .start();
-    var LeftArmTweenEnd = new TWEEN.Tween(LeftArmRotationEnd)
-        .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.In)
-        .onUpdate(function () {
-            mario.bones.left_forearm.rotation.x = degToRad(LeftArmRotationEnd.x);
-            mario.bones.left_upperarm.rotation.x = degToRad(LeftArmRotationEnd.x);
-        })
-        .start();
-
-
-    RightArmTweenStart.chain(RightArmTweenEnd);
-    LeftArmTweenStart.chain(LeftArmTweenEnd);
-
-    /* ----- LEVARE PIEDE PER IL CALCIO ----- */
-    // START - LEGS SHOOT MOVEMENT
-    var kickMaxAngle = -60;
-    var kickMaxAngle1 = -180;
-
-
-    //RIGHT THIGH
-    var legRotationStart = { x: 0, y: 0, z: 0 };
-    var legTweenStart = new TWEEN.Tween(legRotationStart)
-        .to({ x: -kickMaxAngle, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            mario.bones.right_thigh.rotation.x = degToRad(legRotationStart.x);
-
-        })
-        .start();
-
-    //LEFT THIGH
-    var leftLegRotationStart = { x: 0, y: 0, z: 0 };
-    var leftLegTweenStart = new TWEEN.Tween(leftLegRotationStart)
-        .to({ x: -kickMaxAngle, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            mario.bones.left_thigh.rotation.x = degToRad(leftLegRotationStart.x);
-
-        })
-        .start();
-
-
-    //END - LEGS SHOOT MOVEMENT+
-
-    //RIGHT 
-    var legRotationEnd = { x: -kickMaxAngle, y: 0, z: 0 };
-    var legTweenEnd = new TWEEN.Tween(legRotationEnd)
-        .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.In)
-        .onUpdate(function () {
-            mario.bones.right_thigh.rotation.x = degToRad(legRotationEnd.x);
-        })
-        .start();
-
-
-    //LEFT
-    var leftLegRotationEnd = { x: kickMaxAngle1, y: 0, z: 0 };
-    var leftLegTweenEnd = new TWEEN.Tween(leftLegRotationEnd)
-        .to({ x: -90, y: -1, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.In)
-        .onUpdate(function () {
-            mario.bones.left_thigh.rotation.x = degToRad(leftLegRotationEnd.x);
-        })
-        .start();
-
-    legTweenStart.chain(legTweenEnd);
-    leftLegTweenStart.chain(leftLegTweenEnd);
-
-
-    /* ----- MOVIMENTO DEL PIEDE ----- */
-    var footMaxAngle = 90;
-
-    var footRotationStart = { x: 0, y: 0, z: -5 };
-    var footTweenStart = new TWEEN.Tween(footRotationStart)
-        .to({ x: footMaxAngle, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(function () {
-            mario.bones.right_foot.rotation.z = degToRad(footRotationStart.z);
-        })
-        .start();
-
-    var footRotationEnd = { x: footMaxAngle, y: 0, z: 2 };
-    var footTweenEnd = new TWEEN.Tween(footRotationEnd)
-        .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
-        .easing(TWEEN.Easing.Quadratic.In)
-        .onUpdate(function () {
-            mario.bones.right_foot.rotation.z = degToRad(footRotationEnd.z);
-        })
-        .start();
-
-    footTweenStart.chain(footTweenEnd);
+    
+    marioRunShoot();
 
     
-    
-    // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
-    characterCurrentAnimationTweens = [];
-    characterCurrentAnimationTweens.push(legTweenStart, legTweenEnd);
-    characterCurrentAnimationTweens.push(footTweenStart, footTweenEnd);
+    setTimeout(() => {
+        resetPose(mario);
+        stopAllAnimations();
+
+        
+        // Calcola la distanza tra Mario e la palla
+        const distance = mario.mesh.position.distanceTo(palla.position);
+
+        // Definisci una distanza massima per poter calciare
+        const kickDistance = 10; // Modifica questo valore secondo necessità
+
+        if (distance > kickDistance) {
+            console.log("La palla è troppo lontana per essere calciata.");
+            return; // Esci se la palla è troppo lontana
+        }
 
 
-
-    // Aggiungi questo dopo la parte di animazione
-    const tiroMario = key; // Salva il tipo di tiro
-
-    console.log(" " + key)
-    const parataLuigi = luigiSaveAttempt(); // Ottieni la direzione della parata
-    ballAnimation(tiroMario, parataLuigi); // Chiama la funzione di animazione della palla
+        var animationTime = 800; // Durata dell'animazione in millisecondi
 
 
-    if(tiroMario == parataLuigi){
-        setTimeout(() => {
-            celebrate(luigi);
-            defeat(mario); // Mario esce sconfitto
-        },1100 );
-        console.log("CHE PARATA DI LUIGI")
-    } else {
-        setTimeout(() => {
-            celebrate(mario);
-            defeat(luigi); // Mario esce sconfitto
-        },1100 );
-        console.log("CHE GRAN GOAL DI MARIO")
-    }
-    
+        /* ----- Coordinazione per il tiro ----- */
+
+        //START - ARMS 
+        var MaxAngle = -30;
+
+        var RightArmRotationStart = { x: 2, y: -2, z: 0 };
+        var LeftArmRotationStart = { x: 2, y: -2, z: 0 };
+        var LeftArmTweenStart = new TWEEN.Tween(LeftArmRotationStart)
+            .to({ x: -MaxAngle, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                mario.bones.left_forearm.rotation.x = degToRad(LeftArmRotationStart.x);
+                mario.bones.left_upperarm.rotation.x = degToRad(LeftArmRotationStart.x);
+            })
+            .start();
+
+        var RightArmTweenStart = new TWEEN.Tween(RightArmRotationStart)
+            .to({ x: -MaxAngle, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                mario.bones.right_forearm.rotation.x = degToRad(RightArmRotationStart.x);
+                mario.bones.right_upperarm.rotation.x = degToRad(RightArmRotationStart.x);
+            })
+            .start();
+
+
+        //END - ARMS
+        var RightArmRotationEnd = { x: -MaxAngle, y: 0, z: 0 };
+        var LeftArmRotationEnd = { x: -MaxAngle, y: 0, z: 0 };
+        var RightArmTweenEnd = new TWEEN.Tween(RightArmRotationEnd)
+            .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(function () {
+                mario.bones.right_forearm.rotation.x = degToRad(RightArmRotationEnd.x);
+                mario.bones.right_upperarm.rotation.x = degToRad(RightArmRotationEnd.x);
+            })
+            .start();
+        var LeftArmTweenEnd = new TWEEN.Tween(LeftArmRotationEnd)
+            .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(function () {
+                mario.bones.left_forearm.rotation.x = degToRad(LeftArmRotationEnd.x);
+                mario.bones.left_upperarm.rotation.x = degToRad(LeftArmRotationEnd.x);
+            })
+            .start();
+
+
+        RightArmTweenStart.chain(RightArmTweenEnd);
+        LeftArmTweenStart.chain(LeftArmTweenEnd);
+
+        /* ----- LEVARE PIEDE PER IL CALCIO ----- */
+        // START - LEGS SHOOT MOVEMENT
+        var kickMaxAngle = -60;
+        var kickMaxAngle1 = -180;
+
+
+        //RIGHT THIGH
+        var legRotationStart = { x: 0, y: 0, z: 0 };
+        var legTweenStart = new TWEEN.Tween(legRotationStart)
+            .to({ x: -kickMaxAngle, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                mario.bones.right_thigh.rotation.x = degToRad(legRotationStart.x);
+
+            })
+            .start();
+
+        //LEFT THIGH
+        var leftLegRotationStart = { x: 0, y: 0, z: 0 };
+        var leftLegTweenStart = new TWEEN.Tween(leftLegRotationStart)
+            .to({ x: -kickMaxAngle, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                mario.bones.left_thigh.rotation.x = degToRad(leftLegRotationStart.x);
+
+            })
+            .start();
+
+
+        //END - LEGS SHOOT MOVEMENT+
+
+        //RIGHT 
+        var legRotationEnd = { x: -kickMaxAngle, y: 0, z: 0 };
+        var legTweenEnd = new TWEEN.Tween(legRotationEnd)
+            .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(function () {
+                mario.bones.right_thigh.rotation.x = degToRad(legRotationEnd.x);
+            })
+            .start();
+
+
+        //LEFT
+        var leftLegRotationEnd = { x: kickMaxAngle1, y: 0, z: 0 };
+        var leftLegTweenEnd = new TWEEN.Tween(leftLegRotationEnd)
+            .to({ x: -90, y: -1, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(function () {
+                mario.bones.left_thigh.rotation.x = degToRad(leftLegRotationEnd.x);
+            })
+            .start();
+
+        legTweenStart.chain(legTweenEnd);
+       
+       
+
+
+        /* ----- MOVIMENTO DEL PIEDE ----- */
+        var footMaxAngle = 90;
+
+        var footRotationStart = { x: 0, y: 0, z: -5 };
+        var footTweenStart = new TWEEN.Tween(footRotationStart)
+            .to({ x: footMaxAngle, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .onUpdate(function () {
+                mario.bones.right_foot.rotation.z = degToRad(footRotationStart.z);
+            })
+            .start();
+
+        var footRotationEnd = { x: footMaxAngle, y: 0, z: 2 };
+        var footTweenEnd = new TWEEN.Tween(footRotationEnd)
+            .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(function () {
+                mario.bones.right_foot.rotation.z = degToRad(footRotationEnd.z);
+            })
+            .start();
+
+        footTweenStart.chain(footTweenEnd);
+
+        
+        
+        // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
+        characterCurrentAnimationTweens.push(RightArmTweenStart, RightArmTweenEnd);
+        characterCurrentAnimationTweens.push(LeftArmTweenStart, LeftArmTweenEnd);
+        characterCurrentAnimationTweens.push(legTweenStart, legTweenEnd);
+        characterCurrentAnimationTweens.push(footTweenStart, footTweenEnd);
+
+
+        
+        // Aggiungi questo dopo la parte di animazione
+        const tiroMario = key; // Salva il tipo di tiro
+        
+        console.log(" " + key)
+        const parataLuigi = luigiSaveAttempt(); // Ottieni la direzione della parata
+        ballAnimation(tiroMario, parataLuigi); // Chiama la funzione di animazione della palla
+        
+        
+        if(tiroMario == parataLuigi){
+            setTimeout(() => {
+                celebrate(luigi);
+                defeat(mario); // Mario esce sconfitto
+            },1100 );
+            console.log("CHE PARATA DI LUIGI")
+        } else {
+            setTimeout(() => {
+                celebrate(mario);
+                defeat(luigi); // Mario esce sconfitto
+            },1100 );
+            console.log("CHE GRAN GOAL DI MARIO")
+        }
+    },800);
 }
 
 
@@ -529,7 +701,7 @@ export function luigiSaveAttempt(){
         return; // Esci se la palla è troppo lontana
     }
 
-    characterReset(luigi);
+    resetPose(luigi);
 
 
 

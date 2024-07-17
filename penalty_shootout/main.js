@@ -1,11 +1,9 @@
 import * as THREE from './utils/three.module.js';
 import { GLTFLoader } from './utils/GLTFLoader.js';
 import { OrbitControls } from './utils/OrbitControls.js';
-import * as animations from './animations.js';  // Importa animations.js correttamente
-import { initCharacters, marioKickBallAnimation } from './animations.js';
+import { initCharacters } from './animations.js';
 
 
-let clock = new THREE.Clock();
 let scene, camera, renderer, controls;
 let loader;
 let models = {};
@@ -22,22 +20,26 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+
     document.body.appendChild(renderer.domElement);
 
-    const light = new THREE.DirectionalLight(0xffffff, 2);
-    light.position.set(-1, 5, -1).normalize();
+    const light = new THREE.DirectionalLight(0xffffff, 2.5);
+    light.position.set(-70, 50, 150).normalize();
+    light.castShadow = true; 
     scene.add(light);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff);
+    const ambientLight = new THREE.AmbientLight(0xffffff,2.5);
+    ambientLight.position.set(-40,10,-55);
     scene.add(ambientLight);
 
-    // Inizializza la camera e OrbitControls
-    camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 100000);
-    camera.position.set(-8.53, 5.90, -17.12);
+    camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(-55, 23, -105);
 
+    
+    
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(-8, 1, 10);
-    controls.update(); // Necessario se la camera è stata modificata manualmente
+    controls.target.set(-62.85, 48.19, 100);
+    controls.update(); 
 
    
 
@@ -132,8 +134,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
     const loadingManager = new THREE.LoadingManager();
     loader = new GLTFLoader(loadingManager);
-
-
     
 
     modelsToLoad.forEach(model => {
@@ -143,15 +143,7 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
             // Applica la scala specificata al modello
             models[model.name].scale.set(model.scale, model.scale, model.scale);
             
-            // Personalizza la posizione e altre proprietà per modelli specifici
-            if (model.name === 'mario') {
-                camera.position.set(-62.85, 48.19, -91.31);
-                controls.target.set(-62.85, 48.19, 91.31);
-            } else if (model.name === 'luigi') {
-                
-            } else if (model.name === 'penalty_area') {
-                
-            }
+           
             
             removeObjects(gltf.scene, model.namesToRemove); // Rimuovi gli oggetti specificati da namesToRemove
             scene.add(models[model.name]);
@@ -260,7 +252,6 @@ function onKeyUp(event) {
  //Funzione per l'animazione della scena
 function animate() {
     requestAnimationFrame(animate);
-    let delta = clock.getDelta();
 
 
     // Logica per il movimento della camera
@@ -276,7 +267,6 @@ function animate() {
    
     TWEEN.update(); 
 
-    // Aggiorna OrbitControls e renderizza la scena
     controls.update();
 
     cameraCoordinates.innerHTML = `Camera Position: X=${camera.position.x.toFixed(2)}, Y=${camera.position.y.toFixed(2)}, Z=${camera.position.z.toFixed(2)}`;
