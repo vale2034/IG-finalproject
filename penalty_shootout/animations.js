@@ -3,7 +3,7 @@ import * as THREE from './utils/three.module.js';
 
 let models = {}; 
 var mario, luigi, palla, rete, prato, forest, forest1, forest2, forest3;
-let characterCurrentAnimationTweens = {};
+let animationTweens = {};
 let key;
 
 
@@ -19,21 +19,16 @@ export function initCharacters(loadedModels, scene) {
     prato = models.penalty_area ? models.penalty_area.getObjectByName('Plane001') : null;
     palla = models.penalty_area ? models.penalty_area.getObjectByName('Sphere001') : null; // Assign palla correctly
     rete = models.penalty_area ? models.penalty_area.getObjectByName('Box012') : null; // Assign palla correctly
-    // Inizializzazione di bones per Mario e Luigi
     mario.bones = {};
     luigi.bones = {};
-    // Esempio di inizializzazione per Mario e Luigi
     if (mario) {
         mario.mesh = new THREE.Object3D();
         mario.mesh.name = "mario";
-        // Aggiungi il corpo del modello a mesh di Mario
         let corpo_mario = mario.getObjectByName("RootNode");
         corpo_mario.scale.set(0.19, 0.19, 0.19);
-        // Altri setup per Mario se necessario
         mario.mesh.add(corpo_mario);
         mario.mesh.position.set(-40, 0.1, -77);
         scene.add(mario.mesh);
-        //console.log("Mario initialized:", mario);
         setCharacterBones(mario, boneMappingMario);
         resetPose(mario);
         
@@ -44,17 +39,12 @@ export function initCharacters(loadedModels, scene) {
     if (luigi) {
         luigi.mesh = new THREE.Object3D();
         luigi.mesh.name = "luigi";
-        // Aggiungi il corpo del modello a mesh di Luigi
         let corpo_luigi = luigi.getObjectByName("RootNode");
         corpo_luigi.scale.set(1.25, 1.25, 1.25);
-        // Assicurati di usare il nome corretto nel tuo modello GLTF
         luigi.mesh.add(corpo_luigi);
-
-        // Altri setup per Luigi se necessario
         luigi.mesh.position.set(-43, 0, 65);
         luigi.mesh.rotation.set(-0.07,3.1,0);
         scene.add(luigi.mesh);
-        //console.log("Luigi initialized:", luigi);
         setCharacterBones(luigi, boneMappingLuigi);
         resetPose(luigi);
 
@@ -66,7 +56,7 @@ export function initCharacters(loadedModels, scene) {
     if(prato){
         prato.scale.set(1, 0.5, 0.5);
         prato.position.set(-40, 0, 70);
-        scene.add(prato); // Aggiungi prato alla scena
+        scene.add(prato); 
     } else {
         console.log("Prato not found")
     }
@@ -77,8 +67,6 @@ export function initCharacters(loadedModels, scene) {
         palla.scale.set(0.2, 0.2, 0.2);
         palla.position.set(-43, 3, -46);
         scene.add(palla);
-        //console.log("Palla initialized:", palla);
-
     }else {
         console.error("Palla not found in loaded models.");
     }
@@ -87,8 +75,6 @@ export function initCharacters(loadedModels, scene) {
         rete.scale.set(0.094, 0.094, 0.094);
         rete.position.set(-42, 10, 69);
         scene.add(rete);
-        //console.log("Rete initialized:", rete);
-
     } else {
         console.error("Rete not found in loaded models.");
     }
@@ -97,9 +83,7 @@ export function initCharacters(loadedModels, scene) {
     if (forest) {
         forest.mesh = new THREE.Object3D();
         forest.mesh.name = "forest";
-        // Aggiungi il corpo del modello a mesh di Mario
         forest.scale.set(100, 50, 70);
-        // Altri setup per Mario se necessario
         forest.position.set(72, 17, 125);
         forest.rotation.set(0,-20.4,0 )
         scene.add(forest.mesh);
@@ -111,9 +95,7 @@ export function initCharacters(loadedModels, scene) {
     if (forest1) {
         forest1.mesh = new THREE.Object3D();
         forest1.mesh.name = "forest1";
-        // Aggiungi il corpo del modello a mesh di Mario
         forest1.scale.set(120, 50, 70);
-        // Altri setup per Mario se necessario
         forest1.position.set(-140, 17, 125);
         forest1.rotation.set(0,-20.4,0 )
         scene.add(forest1.mesh);
@@ -125,10 +107,7 @@ export function initCharacters(loadedModels, scene) {
     if (forest2) {
         forest2.mesh = new THREE.Object3D();
         forest2.mesh.name = "forest2";
-        // Aggiungi il corpo del modello a mesh di Mario
         forest2.scale.set(55, 50, 70);
-        
-        // Altri setup per Mario se necessario
         forest2.position.set(-45, 15, 155);
         forest2.rotation.set(0,0,0 )
         scene.add(forest2.mesh);
@@ -142,9 +121,7 @@ export function initCharacters(loadedModels, scene) {
     if (forest3) {
         forest3.mesh = new THREE.Object3D();
         forest3.mesh.name = "forest3";
-        // Aggiungi il corpo del modello a mesh di Mario
         forest3.scale.set(65, 50, 70);
-        // Altri setup per Mario se necessario
         forest3.position.set(82, 17, -24);
         forest3.rotation.set(0,-20.4,0 );
         scene.add(forest3.mesh);
@@ -167,8 +144,6 @@ export function initCharacters(loadedModels, scene) {
 
 
 
-
-
 const boneMappingMario = {
     'pelvis_03': 'pelvis',
     'spine00_04': 'spine',
@@ -182,7 +157,7 @@ const boneMappingMario = {
     'L_finger1_1_032': 'left_finger1_1',
     'L_finger1_2_033': 'left_finger1_2',
     'L_finger2_1_024': 'left_finger2_1',
-    'L_finger2_2_025': 'left_finger2_2', // verifica se il nome è corretto
+    'L_finger2_2_025': 'left_finger2_2', 
     'L_finger3_1_026': 'left_finger3_1',
     'L_finger3_2_027': 'left_finger3_2',
     'L_finger4_1_028': 'left_finger4_1',
@@ -192,7 +167,7 @@ const boneMappingMario = {
     'R_upperarm_038': 'right_upperarm',
     'R_forearm_039': 'right_forearm',
     'R_hand_040': 'right_hand',
-    'R_hand_roll_052': 'right_hand_roll', // verifica se il nome è corretto
+    'R_hand_roll_052': 'right_hand_roll', 
     'R_finger1_1_049': 'right_finger1_1',
     'R_finger1_2_050': 'right_finger1_2',
     'R_finger2_1_041': 'right_finger2_1',
@@ -268,12 +243,11 @@ function setCharacterBones(character, boneMapping) {
 
 
 
-// Funzione per convertire gradi in radianti
 function degToRad(degrees) {
     return degrees * (Math.PI / 180);
 }
 
-// Funzione per resettare l'animazione del personaggio
+
 function resetPose(character) {
     if (!character.mesh || !character.bones) {
         console.error('Mesh or bones not defined for character:', character);
@@ -326,6 +300,10 @@ function resetPose(character) {
 function stopAllAnimations() {
     TWEEN.removeAll();
 }
+
+
+
+
 
 export function marioRunShoot() {
 
@@ -470,13 +448,12 @@ export function marioRunShoot() {
 
        
 
-    /* ----- ----- ----- */
-    characterCurrentAnimationTweens = [];
-    characterCurrentAnimationTweens.push(spineTweenStart, spineTweenEnd);
-    characterCurrentAnimationTweens.push(pelvisTweenStart, pelvisTweenEnd);
-    characterCurrentAnimationTweens.push(upperArmTweenStart, upperArmTweenEnd);
-    characterCurrentAnimationTweens.push(thighTweenStart, thighTweenEnd);
-    characterCurrentAnimationTweens.push(bodyTweenStart);
+    animationTweens = [];
+    animationTweens.push(spineTweenStart, spineTweenEnd);
+    animationTweens.push(pelvisTweenStart, pelvisTweenEnd);
+    animationTweens.push(upperArmTweenStart, upperArmTweenEnd);
+    animationTweens.push(thighTweenStart, thighTweenEnd);
+    animationTweens.push(bodyTweenStart);
 
 }
 
@@ -484,7 +461,6 @@ export function marioRunShoot() {
 
 
 
-// Animazione di calcio per Mario
 export function marioKickBallAnimation(key) {
     console.log("Mario is kicking the ball!");
 
@@ -497,23 +473,23 @@ export function marioKickBallAnimation(key) {
 
     
     setTimeout(() => {
-        resetPose(mario);
         stopAllAnimations();
+        resetPose(mario);
 
         
-        // Calcola la distanza tra Mario e la palla
+        // Check collission
         const distance = mario.mesh.position.distanceTo(palla.position);
 
-        // Definisci una distanza massima per poter calciare
-        const kickDistance = 10; // Modifica questo valore secondo necessità
+        
+        const kickDistance = 10; 
 
         if (distance > kickDistance) {
             console.log("La palla è troppo lontana per essere calciata.");
-            return; // Esci se la palla è troppo lontana
+            return; 
         }
 
 
-        var animationTime = 800; // Durata dell'animazione in millisecondi
+        var animationTime = 800; 
 
 
         /* ----- Coordinazione per il tiro ----- */
@@ -566,7 +542,8 @@ export function marioKickBallAnimation(key) {
         RightArmTweenStart.chain(RightArmTweenEnd);
         LeftArmTweenStart.chain(LeftArmTweenEnd);
 
-        /* ----- LEVARE PIEDE PER IL CALCIO ----- */
+        // ----- ALZARE LA GAMBA PER IL TIRO ----- //
+
         // START - LEGS SHOOT MOVEMENT
         var kickMaxAngle = -60;
         var kickMaxAngle1 = -180;
@@ -648,32 +625,30 @@ export function marioKickBallAnimation(key) {
 
         
         
-        // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
-        characterCurrentAnimationTweens.push(RightArmTweenStart, RightArmTweenEnd);
-        characterCurrentAnimationTweens.push(LeftArmTweenStart, LeftArmTweenEnd);
-        characterCurrentAnimationTweens.push(legTweenStart, legTweenEnd);
-        characterCurrentAnimationTweens.push(footTweenStart, footTweenEnd);
+        animationTweens.push(RightArmTweenStart, RightArmTweenEnd);
+        animationTweens.push(LeftArmTweenStart, LeftArmTweenEnd);
+        animationTweens.push(legTweenStart, legTweenEnd);
+        animationTweens.push(footTweenStart, footTweenEnd);
 
 
         
-        // Aggiungi questo dopo la parte di animazione
-        const tiroMario = key; // Salva il tipo di tiro
+        const tiroMario = key; 
         
         console.log(" " + key)
-        const parataLuigi = luigiSaveAttempt(); // Ottieni la direzione della parata
-        ballAnimation(tiroMario, parataLuigi); // Chiama la funzione di animazione della palla
+        const parataLuigi = luigiSaveAttempt(); 
+        ballAnimation(tiroMario, parataLuigi); 
         
         
         if(tiroMario == parataLuigi){
             setTimeout(() => {
                 celebrate(luigi);
-                defeat(mario); // Mario esce sconfitto
+                defeat(mario);
             },1100 );
             console.log("CHE PARATA DI LUIGI")
         } else {
             setTimeout(() => {
                 celebrate(mario);
-                defeat(luigi); // Mario esce sconfitto
+                defeat(luigi); 
             },1100 );
             console.log("CHE GRAN GOAL DI MARIO")
         }
@@ -690,25 +665,21 @@ export function luigiSaveAttempt(){
         return;
     }
 
-    // Calcola la distanza tra Luigi e la palla
     const distance = luigi.mesh.position.distanceTo(palla.position);
 
-    // Definisci una distanza massima per poter parare
-    const kickDistance = 1000; // Modifica questo valore secondo necessità
+    const kickDistance = 1000; 
 
     if (distance > kickDistance) {
         console.log("La palla è troppo lontana per essere parata.");
-        return; // Esci se la palla è troppo lontana
+        return; 
     }
 
     resetPose(luigi);
 
 
 
-    //Definire la scelta casuale della parate per i 3 tipi di traiettoria. 
     const animationTime = 700;
 
-     // Scegliere una traiettoria casuale per il tiro
     const randomSave = Math.random();
     let saveDirection;
 
@@ -876,12 +847,11 @@ export function luigiSaveAttempt(){
         
 
     
-    // Aggiungi tutti i tween all'array characterCurrentAnimationTweens
-    characterCurrentAnimationTweens.push(spineTween);
-    characterCurrentAnimationTweens.push(bodyTweenStart);
-    characterCurrentAnimationTweens.push(pelvisTween);
-    characterCurrentAnimationTweens.push(upperArmTweenStart);
-    characterCurrentAnimationTweens.push(thighTweenStart);
+    animationTweens.push(spineTween);
+    animationTweens.push(bodyTweenStart);
+    animationTweens.push(pelvisTween);
+    animationTweens.push(upperArmTweenStart);
+    animationTweens.push(thighTweenStart);
 
 
     return saveDirection;
@@ -901,7 +871,7 @@ export function ballAnimation(tiroMario, parataLuigi){
 
     if(tiroMario == parataLuigi){
 
-        // Definizione delle traiettorie
+        
         switch (tiroMario) {
             case 'F':
                 console.log("Tiro Forte");
@@ -934,7 +904,7 @@ export function ballAnimation(tiroMario, parataLuigi){
 
     } else {
     
-        // Definizione delle traiettorie
+        
         switch (tiroMario) {
             case 'F':
                 console.log("Tiro Forte");
@@ -970,7 +940,7 @@ export function ballAnimation(tiroMario, parataLuigi){
 
     
 
-        var animationTime = 700; // Durata dell'animazione in millisecondi
+        var animationTime = 700;
 
 
         /* ----- MOVIMENTO DELLA PALLA ----- */
@@ -1008,10 +978,10 @@ export function ballAnimation(tiroMario, parataLuigi){
 
    
     
-    characterCurrentAnimationTweens = [];
-    characterCurrentAnimationTweens.push(ballTween);
-    characterCurrentAnimationTweens.push(ballRotationTween);
-    characterCurrentAnimationTweens.push(reboundTween);
+    animationTweens = [];
+    animationTweens.push(ballTween);
+    animationTweens.push(ballRotationTween);
+    animationTweens.push(reboundTween);
 
 }
 
@@ -1020,24 +990,22 @@ export function ballAnimation(tiroMario, parataLuigi){
 
 function celebrate(character) {
 
-    const jumpHeight = 3; // Altezza del salto
-    const jumpTime = 300; // Tempo per un salto completo (su e giù)
-   
+    const jumpHeight = 3; 
+    const jumpTime = 300; 
 
-    const upPosition = { y: character.mesh.position.y + jumpHeight }; // Posizione in alto
-    const downPosition = { y: character.mesh.position.y }; // Torna alla posizione iniziale
+    const upPosition = { y: character.mesh.position.y + jumpHeight }; 
+    const downPosition = { y: character.mesh.position.y };
 
         
-     // Funzione per ripristinare la posizione originale delle ossa
+     
      const resetBonePositions = () => {
-             const resetTime = 500; // Tempo per ripristinare le rotazioni
-            // Rotazioni originali
-             const originalSpineRotation = { x: 0, y: 0, z: 0 }; // Posizione originale della colonna vertebrale
-             const originalPelvisRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del bacino
-             const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; // Posizione originale del braccio
-             const originalThighRotation = { x:3.1, y: 0, z: 0 }; // Posizione originale della coscia  
+             const resetTime = 500; 
+             const originalSpineRotation = { x: 0, y: 0, z: 0 }; 
+             const originalPelvisRotation = { x: 0, y: 0, z: 0 }; 
+             const originalUpperArmRotation = { x: 0, y: 0, z: 0 }; 
+             const originalThighRotation = { x:3.1, y: 0, z: 0 };   
              const originalBodyStartPosition = { x: character.mesh.position.x, y:character.mesh.position.y +3, z: character.mesh.position.z };
-             // Tween per ripristinare la colonna vertebrale
+             
              const spineTweenReset = new TWEEN.Tween(character.bones.spine.rotation)
                  .to(originalSpineRotation, resetTime)
                  .onUpdate(() => {
@@ -1046,7 +1014,7 @@ function celebrate(character) {
                      character.bones.spine.rotation.z = degToRad(spineTweenReset._object.z);
                  })
                  .start();   
-             // Tween per ripristinare il bacino
+             
              const pelvisTweenReset = new TWEEN.Tween(character.bones.pelvis.rotation)
                  .to(originalPelvisRotation, resetTime)
                  .onUpdate(() => {
@@ -1055,7 +1023,7 @@ function celebrate(character) {
                      character.bones.pelvis.rotation.z = degToRad(pelvisTweenReset._object.z);
                  })
                  .start();   
-             // Tween per ripristinare i bracci
+             
              const upperArmTweenReset = new TWEEN.Tween(character.bones.left_upperarm.rotation)
                  .to(originalUpperArmRotation, resetTime)
                  .onUpdate(() => {
@@ -1067,7 +1035,7 @@ function celebrate(character) {
                      character.bones.right_upperarm.rotation.z = degToRad(upperArmTweenReset._object.z -25);
                  })
                  .start();   
-             // Tween per ripristinare le cosce
+            
              const thighTweenReset = new TWEEN.Tween(character.bones.left_thigh.rotation)
                  .to(originalThighRotation, resetTime)
                  .onUpdate(() => {
@@ -1112,7 +1080,7 @@ function celebrate(character) {
         upTween.start();
     }
 
-    // Avvia il primo salto
+   
     jump();
 
     resetBonePositions();
@@ -1188,7 +1156,7 @@ function defeat(character) {
 
     function spin() {
         const startRotation = { y: character.mesh.rotation.y }; // Rotazione iniziale
-        const endRotation = { y: character.mesh.rotation.y + 2 * Math.PI }; // Rotazione completa (360 gradi)
+        const endRotation = { y: character.mesh.rotation.y + 2 * Math.PI }; 
 
         const spinTween = new TWEEN.Tween(startRotation)
             .to(endRotation, spinTime)
@@ -1223,7 +1191,7 @@ function bounceBall(bounceHeight) {
         function bounce() {
             if (currentHeight < 0.1) return;
 
-            let timeUp = Math.sqrt((2 * currentHeight) / gravity);
+            let timeUp = Math.sqrt((2 * currentHeight) / gravity); //equazione del moto uniformemente accelerato
             let timeDown = timeUp;
 
             let bounceUp = new TWEEN.Tween({ y: groundY })

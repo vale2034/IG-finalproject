@@ -25,7 +25,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
     const light = new THREE.DirectionalLight(0xffffff, 2.5);
     light.position.set(-70, 50, 150).normalize();
-    light.castShadow = true; 
     scene.add(light);
 
     const ambientLight = new THREE.AmbientLight(0xffffff,2.5);
@@ -157,9 +156,7 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
     loadingManager.onLoad = () => {
         console.log('Caricamento completato.');
-        // Inizializza i personaggi (Mario, Luigi, ecc.) in animations.js
         initCharacters(models, scene);
-
 
     };
 
@@ -179,7 +176,6 @@ function removeObjects(gltfScene, namesToRemove) {
       //  console.log('Checking object:', child.name);
         if (namesToRemove.includes(child.name)) {
             objectsToRemove.push(child);
-         //   console.log('Marked for removal:', child.name);
         }
     });
 
