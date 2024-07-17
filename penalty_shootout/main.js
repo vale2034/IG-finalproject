@@ -13,7 +13,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
     scene = new THREE.Scene();
     
-    // Carica l'immagine JPEG per la skybox
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('assets/sunflowers_puresky.jpg');
     scene.background = texture;
@@ -44,7 +43,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
 
 
 
-  // URL dei modelli da caricare
   const modelsToLoad = [
     { name: 'penalty_area', url: 'models/penalty_area/scene.gltf', scale: 5, namesToRemove: [
         'LayerLayer_1', 'LayerLayer_1_1', 'Cylinder001', 'Cylinder002', 'Cylinder003',
@@ -139,12 +137,11 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
         loader.load(model.url, gltf => {
             models[model.name] = gltf.scene;
     
-            // Applica la scala specificata al modello
             models[model.name].scale.set(model.scale, model.scale, model.scale);
             
            
             
-            removeObjects(gltf.scene, model.namesToRemove); // Rimuovi gli oggetti specificati da namesToRemove
+            removeObjects(gltf.scene, model.namesToRemove);
             scene.add(models[model.name]);
             
             
@@ -167,7 +164,6 @@ var moveForward = false, moveBackward = false, moveLeft = false, moveRight = fal
    
 
 
-// Funzione per rimuovere gli oggetti indesiderati dalla scena
 function removeObjects(gltfScene, namesToRemove) {
     let objectsToRemove = [];
 
@@ -196,7 +192,6 @@ document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
 
-// Gestisce gli eventi di pressione dei tasti per il movimento della camera
 function onKeyDown(event) {
     //console.log('Key pressed:', event.code);
     switch (event.code) {
@@ -245,19 +240,17 @@ function onKeyUp(event) {
 
 
 
- //Funzione per l'animazione della scena
 function animate() {
     requestAnimationFrame(animate);
 
 
-    // Logica per il movimento della camera
     const velocity = new THREE.Vector3();
     if (moveForward) velocity.z -= 2;
     if (moveBackward) velocity.z += 2;
     if (moveLeft) velocity.x -= 2;
     if (moveRight) velocity.x += 2;
     camera.position.add(velocity);
-    velocity.multiplyScalar(0.9); // Damping
+    velocity.multiplyScalar(0.9); 
     
 
    

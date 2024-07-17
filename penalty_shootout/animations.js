@@ -312,7 +312,7 @@ export function marioRunShoot() {
         return;
     }
 
-    var animationTime = 800;
+    var animationTime = 700;
     
 
     //------------SPINA-----------// 
@@ -489,7 +489,7 @@ export function marioKickBallAnimation(key) {
         }
 
 
-        var animationTime = 800; 
+        var animationTime = 700; 
 
 
         /* ----- Coordinazione per il tiro ----- */
@@ -553,7 +553,7 @@ export function marioKickBallAnimation(key) {
         var legRotationStart = { x: 0, y: 0, z: 0 };
         var legTweenStart = new TWEEN.Tween(legRotationStart)
             .to({ x: -kickMaxAngle, y: 0, z: 0 }, animationTime / 3)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .easing(TWEEN.Easing.Quadratic.In)
             .onUpdate(function () {
                 mario.bones.right_thigh.rotation.x = degToRad(legRotationStart.x);
 
@@ -589,7 +589,7 @@ export function marioKickBallAnimation(key) {
         var leftLegRotationEnd = { x: kickMaxAngle1, y: 0, z: 0 };
         var leftLegTweenEnd = new TWEEN.Tween(leftLegRotationEnd)
             .to({ x: -90, y: -1, z: 0 }, animationTime / 3)
-            .easing(TWEEN.Easing.Quadratic.In)
+            .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(function () {
                 mario.bones.left_thigh.rotation.x = degToRad(leftLegRotationEnd.x);
             })
@@ -603,20 +603,22 @@ export function marioKickBallAnimation(key) {
         /* ----- MOVIMENTO DEL PIEDE ----- */
         var footMaxAngle = 90;
 
-        var footRotationStart = { x: 0, y: 0, z: -5 };
+        var footRotationStart = { x: 0, y: -2, z: -5 };
         var footTweenStart = new TWEEN.Tween(footRotationStart)
-            .to({ x: footMaxAngle, y: 0, z: 0 }, animationTime / 3)
-            .easing(TWEEN.Easing.Quadratic.Out)
+            .to({ x: footMaxAngle, y: 0, z: -20 }, animationTime / 3)
+            .easing(TWEEN.Easing.Quadratic.In)
             .onUpdate(function () {
+                mario.bones.right_foot.rotation.y = degToRad(footRotationStart.y);
                 mario.bones.right_foot.rotation.z = degToRad(footRotationStart.z);
             })
             .start();
 
-        var footRotationEnd = { x: footMaxAngle, y: 0, z: 2 };
+        var footRotationEnd = { x: footMaxAngle, y: 0, z: 0};
         var footTweenEnd = new TWEEN.Tween(footRotationEnd)
             .to({ x: 0, y: 0, z: 0 }, animationTime / 3)
-            .easing(TWEEN.Easing.Quadratic.In)
+            .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(function () {
+                mario.bones.right_foot.rotation.y = degToRad(footRotationEnd.y);
                 mario.bones.right_foot.rotation.z = degToRad(footRotationEnd.z);
             })
             .start();
@@ -631,28 +633,30 @@ export function marioKickBallAnimation(key) {
         animationTweens.push(footTweenStart, footTweenEnd);
 
 
-        
-        const tiroMario = key; 
-        
-        console.log(" " + key)
-        const parataLuigi = luigiSaveAttempt(); 
-        ballAnimation(tiroMario, parataLuigi); 
-        
-        
-        if(tiroMario == parataLuigi){
-            setTimeout(() => {
-                celebrate(luigi);
-                defeat(mario);
-            },1100 );
-            console.log("CHE PARATA DI LUIGI")
-        } else {
-            setTimeout(() => {
-                celebrate(mario);
-                defeat(luigi); 
-            },1100 );
-            console.log("CHE GRAN GOAL DI MARIO")
-        }
-    },800);
+        setTimeout(() => {
+            const tiroMario = key; 
+            
+            console.log(" " + key)
+            const parataLuigi = luigiSaveAttempt();
+            ballAnimation(tiroMario, parataLuigi); 
+            
+            
+            if(tiroMario == parataLuigi){
+                setTimeout(() => {
+                    celebrate(luigi);
+                    defeat(mario);
+                },1100 );
+                console.log("CHE PARATA DI LUIGI")
+            } else {
+                setTimeout(() => {
+                    celebrate(mario);
+                    defeat(luigi); 
+                },1100 );
+                console.log("CHE GRAN GOAL DI MARIO")
+            }
+        },300);
+
+    },700);
 }
 
 
